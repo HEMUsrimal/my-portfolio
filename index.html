@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H.E.M. Udayanga Srimal — root@portfolio</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Linked External CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="crt-overlay"></div>
+<div class="crt-flicker"></div>
+<div class="vignette"></div>
+
+<div class="statusbar">
+  <div class="statusbar-inner">
+    <div class="status-left"><span class="status-dot"></span><span>root@udayanga-srimal:~$</span></div>
+    <nav class="status-nav">
+      <a href="#stack">01_stack</a>
+      <a href="#projects">02_projects</a>
+      <a href="#gallery">03_gallery</a>
+      <a href="#contact">04_contact</a>
+    </nav>
+    <div class="status-clock" id="statusClock">00:00:00</div>
+  </div>
+</div>
+
+<div class="crt-screen">
+
+  <!-- HERO SECTION -->
+  <section class="hero" id="hero">
+    <canvas id="matrix-canvas"></canvas>
+    <canvas id="core-canvas"></canvas>
+    <div class="hero-inner">
+      <div class="boot-tag">SYSTEM BOOT SEQUENCE INITIATED <span class="core-status">// CORE: ONLINE</span></div>
+      
+      <!-- UPDATE YOUR NAME HERE -->
+      <h1 class="hero-name">&gt; H.E.M. Udayanga Srimal<span class="cursor-blink">_</span></h1>
+      
+      <!-- UPDATE YOUR JOB TITLE HERE -->
+      <div class="hero-role">Software Engineer · Embedded Systems · AI &amp; Edge Computing</div>
+
+      <div class="boot-sequence" id="bootSequence" aria-live="polite"></div>
+
+      <div class="hero-actions">
+        <a href="#projects" class="term-btn">EXECUTE: View_Systems</a>
+        <a href="#gallery" class="term-btn alt">EXECUTE: Access_Gallery</a>
+      </div>
+    </div>
+    <div class="scroll-hint"><span class="bar"></span> scroll://continue</div>
+  </section>
+
+  <!-- STACK SECTION -->
+  <section id="stack">
+    <div class="section-head reveal">
+      <span class="section-tag">drwxr-xr-x</span>
+      <h2 class="section-title">
+        <span class="path">~/</span>root<span class="path">/</span><span class="glitch-hover" data-text="stack">stack</span>
+      </h2>
+    </div>
+    <p class="section-sub reveal">Directory listing of active systems, protocols, and hardware interfaces currently loaded in memory.</p>
+
+    <!-- UPDATE YOUR SKILLS IN THESE LISTS -->
+   <div class="tree-wrap reveal">
+      
+      <div class="tree-node open">
+        <div class="tree-node-head">
+          <span class="toggle-icon"></span>
+          <span class="icon">▣</span> ai_vision_core/ <span style="color:var(--ink-faint); font-weight:400;">[deep learning]</span>
+        </div>
+        <div class="tree-content">
+          <ul class="tree-list">
+            <li><b>Deep Learning</b> — Neural network architecture, model training &amp; deployment</li>
+            <li><b>Computer Vision</b> — Object detection, image processing &amp; real-time visual analysis</li>
+            <li><b>Problem Solving</b> — Translating complex mathematical models into production code</li>
+            <li><b>Data Engineering</b> — Structuring and optimizing datasets for ML pipelines</li>
+          </ul>
+          <div class="meter-row">COMPUTE <div class="meter-track"><div class="meter-fill" style="width:94%"></div></div> 94%</div>
+        </div>
+      </div>
+
+      <div class="tree-node">
+        <div class="tree-node-head">
+          <span class="toggle-icon"></span>
+          <span class="icon">▣</span> mobile_ui/ <span style="color:var(--ink-faint); font-weight:400;">[app development]</span>
+        </div>
+        <div class="tree-content">
+          <ul class="tree-list">
+            <li><b>Cross-Platform (Dart)</b> — Building responsive, high-performance apps using Flutter</li>
+            <li><b>Native Android (Java)</b> — Activity/Fragment lifecycles, custom views &amp; system integration</li>
+            <li><b>UI/UX Implementation</b> — Translating Figma wireframes into interactive, pixel-perfect code</li>
+            <li><b>Local Data</b> — SQLite / Room for robust, offline-capable mobile experiences</li>
+          </ul>
+          <div class="meter-row">BUILD <div class="meter-track"><div class="meter-fill" style="width:88%; background:var(--magenta); box-shadow:0 0 10px var(--magenta-glow);"></div></div> 88%</div>
+        </div>
+      </div>
+
+      <div class="tree-node">
+        <div class="tree-node-head">
+          <span class="toggle-icon"></span>
+          <span class="icon">▣</span> system_automation/ <span style="color:var(--ink-faint); font-weight:400;">[workflow logic]</span>
+        </div>
+        <div class="tree-content">
+          <ul class="tree-list">
+            <li><b>Process Automation</b> — Python scripting &amp; n8n workflow orchestration</li>
+            <li><b>Hardware Automation</b> — ESP32/Arduino integration for smart, physical environments</li>
+            <li><b>Efficiency Engineering</b> — Streamlining repetitive tasks and solving system bottlenecks</li>
+            <li><b>Algorithmic Debugging</b> — Breaking down complex errors into logical, solvable steps</li>
+          </ul>
+          <div class="meter-row">LOGIC <div class="meter-track"><div class="meter-fill" style="width:91%; background:var(--cyan); box-shadow:0 0 10px var(--cyan-glow);"></div></div> 91%</div>
+        </div>
+      </div>
+
+    </div>
+  <!-- PROJECTS SECTION -->
+  <section id="projects">
+    <div class="section-head reveal">
+      <span class="section-tag">[ENCRYPTED]</span>
+      <h2 class="section-title"><span class="glitch-hover" data-text="Mainframe_Databanks">Mainframe_Databanks</span></h2>
+    </div>
+    
+    <!-- UPDATE YOUR PROJECTS HERE (Change data-decrypt and file-name) -->
+    <div class="file-list reveal">
+      <div class="file-row" data-decrypt="AI-powered real-time bus arrival prediction and GPS-based fleet management for urban transit networks.">
+        <div class="file-row-top">
+          <div class="file-name">Intelligent_Transport_System<span class="ext">.exe</span></div>
+          <div class="file-status">● ENCRYPTED — HOVER TO DECRYPT</div>
+        </div>
+        <div class="decrypt-text" data-default="[file locked — awaiting decryption key]"></div>
+        <div class="file-progress"></div>
+      </div>
+
+      <div class="file-row" data-decrypt="IoT room-suitability analysis system utilizing ESP32-S3 and real-time DHT11 sensor telemetry.">
+        <div class="file-row-top">
+          <div class="file-name">Smart_Environment_Monitor<span class="ext">.sys</span></div>
+          <div class="file-status">● ENCRYPTED — HOVER TO DECRYPT</div>
+        </div>
+        <div class="decrypt-text" data-default="[file locked — awaiting decryption key]"></div>
+        <div class="file-progress"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY SECTION -->
+  <section id="gallery">
+    <div class="section-head reveal">
+      <span class="section-tag">FEED×04</span>
+      <h2 class="section-title"><span class="glitch-hover" data-text="Visual_Data_Logs">Visual_Data_Logs</span></h2>
+    </div>
+    <div class="photo-grid reveal" id="photoGrid"></div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section id="contact">
+    <div class="section-head reveal">
+      <span class="section-tag">PORT 22</span>
+      <h2 class="section-title"><span class="glitch-hover" data-text="Secure_Connection">Secure_Connection</span></h2>
+    </div>
+    <div class="ssh-panel reveal">
+      <div class="ssh-titlebar">
+        <div class="ssh-dots"><span></span><span></span><span></span></div>
+        <div>ssh udayanga@portfolio:~ — 80×24</div>
+      </div>
+      <div class="ssh-body">
+        <div class="ssh-line"><span class="prompt">$</span> connecting to secure host...</div>
+        <form id="contactForm">
+          <div class="form-field">
+            <label for="f-name">identify_yourself</label>
+            <input id="f-name" name="name" type="text" placeholder="your name" required>
+          </div>
+          <div class="form-field">
+            <label for="f-email">return_channel</label>
+            <input id="f-email" name="email" type="email" placeholder="your@email.com" required>
+          </div>
+          <div class="form-field">
+            <label for="f-msg">payload</label>
+            <textarea id="f-msg" name="message" rows="4" placeholder="type your message..." required></textarea>
+          </div>
+          <button type="submit" class="ssh-submit">[ TRANSMIT MESSAGE ]</button>
+          <div class="ssh-response" id="sshResponse"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>© <span id="year"></span> H.E.M. Udayanga Srimal — all systems nominal</div>
+    <div><a href="#hero">↑ return_to_root</a></div>
+  </footer>
+
+</div>
+
+<!-- Linked External JS -->
+<script src="main.js"></script>
+</body>
+</html>
