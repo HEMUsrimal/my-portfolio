@@ -48,11 +48,32 @@
       <!-- UPDATE YOUR JOB TITLE HERE -->
       <div class="hero-role">Software Engineer · Embedded Systems · AI &amp; Edge Computing</div>
 
-      <div class="boot-sequence" id="bootSequence" aria-live="polite"></div>
+      <div class="interactive-terminal terminal-panel">
+        <div class="terminal-header">
+          <div class="terminal-dots"><span></span><span></span><span></span></div>
+          <div class="terminal-title">guest@udayanga-srimal:~$</div>
+        </div>
+        <div class="terminal-body" id="terminalBody">
+          <div class="boot-sequence" id="bootSequence" aria-live="polite"></div>
+          <div class="terminal-input-row" id="terminalInputRow" style="display: none;">
+            <span class="prompt">guest@portfolio:~$</span>
+            <input type="text" id="terminalInput" autocomplete="off" spellcheck="false" autofocus>
+          </div>
+        </div>
+      </div>
 
       <div class="hero-actions">
         <a href="#projects" class="term-btn">EXECUTE: View_Systems</a>
         <a href="#gallery" class="term-btn alt">EXECUTE: Access_Gallery</a>
+      </div>
+      <div class="hero-meta">
+        <a class="github-link" href="https://github.com/udayanga-srimal" target="_blank" rel="noreferrer noopener">
+          GitHub: github.com/udayanga-srimal
+        </a>
+        <div class="hero-badges">
+          <span class="badge">⭐ Starred: Intelligent_Transport_System</span>
+          <span class="badge alt">3D Cyberpunk Portfolio</span>
+        </div>
       </div>
     </div>
     <div class="scroll-hint"><span class="bar"></span> scroll://continue</div>
@@ -128,7 +149,19 @@
     </div>
     
     <!-- UPDATE YOUR PROJECTS HERE (Change data-decrypt and file-name) -->
-    <div class="file-list reveal">
+    <div class="star-project reveal">
+      <div class="star-card">
+        <div class="star-card-top">
+          <span class="badge">★ STAR PROJECT</span>
+          <a class="star-link" href="https://github.com/udayanga-srimal/Intelligent_Transport_System" target="_blank" rel="noreferrer noopener">View on GitHub</a>
+        </div>
+        <h3>Intelligent_Transport_System.exe</h3>
+        <p>AI-driven bus arrival prediction and GPS-based fleet logistics for urban transit networks, built with embedded IoT telemetry and smart scheduling algorithms.</p>
+        <div class="project-tags"><span>AI</span><span>IoT</span><span>Smart Transit</span><span>Data Ops</span></div>
+      </div>
+    </div>
+
+    <div class="file-list reveal" id="projectsList">
       <div class="file-row" data-decrypt="AI-powered real-time bus arrival prediction and GPS-based fleet management for urban transit networks.">
         <div class="file-row-top">
           <div class="file-name">Intelligent_Transport_System<span class="ext">.exe</span></div>
