@@ -85,13 +85,18 @@
       switch(cmd) {
         case 'help':
           responseEl.innerHTML = `Available commands:<br>
-          - <b>about</b>    : Who is H.E.M. Udayanga Srimal?<br>
-          - <b>skills</b>   : View loaded systems & skill protocols<br>
-          - <b>projects</b> : Access mainframe database records<br>
-          - <b>gallery</b>  : View photo gallery datalogs<br>
-          - <b>contact</b>  : Initialize secure communication<br>
-          - <b>messages</b> : Read transmission logs sent from this terminal<br>
-          - <b>clear</b>    : Flush terminal buffer`;
+          - <b>about</b>          : Who is H.E.M. Udayanga Srimal?<br>
+          - <b>skills</b>         : View loaded systems & skill protocols<br>
+          - <b>experience</b>     : View professional history logs<br>
+          - <b>projects</b>       : Access mainframe database records<br>
+          - <b>publications</b>   : Read research abstracts & bibliography<br>
+          - <b>certifications</b> : List verified security & cloud tracks<br>
+          - <b>volunteer</b>      : View community contribution logs<br>
+          - <b>photography</b>    : Initialize Aperture_Core configuration<br>
+          - <b>gallery</b>        : View photo gallery datalogs<br>
+          - <b>contact</b>        : Initialize secure communication<br>
+          - <b>messages</b>       : Read transmission logs sent from this terminal<br>
+          - <b>clear</b>          : Flush terminal buffer`;
           break;
         case 'about':
           responseEl.innerHTML = "<b>H.E.M. Udayanga Srimal</b> — Software Engineer specializing in Embedded Systems, Computer Vision, and AI Edge Computing. Aiming to build robust, offline-capable hardware workflows and intelligent systems.";
@@ -100,9 +105,29 @@
           responseEl.innerHTML = "Opening stack section...";
           window.location.hash = '#stack';
           break;
+        case 'experience':
+          responseEl.innerHTML = "Accessing professional experience logs...";
+          window.location.hash = '#experience';
+          break;
         case 'projects':
           responseEl.innerHTML = "Accessing Mainframe Databanks...";
           window.location.hash = '#projects';
+          break;
+        case 'publications':
+          responseEl.innerHTML = "Accessing publications directory...";
+          window.location.hash = '#publications';
+          break;
+        case 'certifications':
+          responseEl.innerHTML = "Loading certified cloud credentials...";
+          window.location.hash = '#certifications';
+          break;
+        case 'volunteer':
+          responseEl.innerHTML = "Opening community contributions log...";
+          window.location.hash = '#volunteer';
+          break;
+        case 'photography':
+          responseEl.innerHTML = "Initializing Aperture_Core configuration...";
+          window.location.hash = '#photography';
           break;
         case 'gallery':
           responseEl.innerHTML = "Opening Visual Data Logs...";
@@ -291,9 +316,9 @@
   if(!grid) return;
 
   const photos = [
-    { src: "cyberpunk_workspace.png", tag: "FEED_01", caption: "3D Zero-G Workspace - Cyberpunk" },
-    { src: "iot_esp32_setup.png", tag: "FEED_02", caption: "IoT Development Workbench - ESP32 Telemetry" },
-    { src: "computer_vision_feed.png", tag: "FEED_03", caption: "Computer Vision Analysis Nodes - City Grid" },
+    { src: "assets/cyberpunk_workspace.png", tag: "FEED_01", caption: "3D Zero-G Workspace - Cyberpunk" },
+    { src: "assets/iot_esp32_setup.png", tag: "FEED_02", caption: "IoT Development Workbench - ESP32 Telemetry" },
+    { src: "assets/computer_vision_feed.png", tag: "FEED_03", caption: "Computer Vision Analysis Nodes - City Grid" },
     { src: "https://images.unsplash.com/photo-1500534623283-312aade485b7?w=800&q=80", tag: "FEED_04", caption: "Urban Geometrical Long Exposures" },
     { src: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80", tag: "FEED_05", caption: "Forest Canopy Field Study" },
     { src: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&q=80", tag: "FEED_06", caption: "Sri Lanka Coastal Drift Photography" },
@@ -334,14 +359,14 @@
     // Step-by-step interactive simulated network terminal log
     const sequence = [
       { text: "$ initializing handshake protocols...", time: 300 },
-      { text: "$ resolving DNS nodes for port 22...", time: 400 },
-      { text: "$ connection established. starting AES-256 handshake...", time: 350 },
+      { text: "$ resolving DNS nodes for udayangasrimaluni2002@gmail.com...", time: 400 },
+      { text: "$ connection established to udayangasrimaluni2002@gmail.com...", time: 350 },
       { text: `$ encoding client identity details: [${nameVal}]...`, time: 500 },
       { text: "$ packaging secure payload...", time: 400 },
       { text: "$ sending payload packets [======    ] 60%...", time: 500 },
       { text: "$ sending payload packets [==========] 100%...", time: 300 },
       { text: "$ transaction registered. calculating cryptographic checksum...", time: 450 },
-      { text: "$ [SUCCESS] payload securely transmitted.", color: "var(--cyan)", time: 400 },
+      { text: "$ [SUCCESS] payload securely transmitted to udayangasrimaluni2002@gmail.com.", color: "var(--cyan)", time: 400 },
       { text: "$ [LOGGED] local record registered under 'messages' profile.", color: "var(--green)", time: 200 }
     ];
 

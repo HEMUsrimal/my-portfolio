@@ -16,7 +16,10 @@ A futuristic portfolio website built with HTML, CSS, and JavaScript. It showcase
 - `style.css` — all styling, layout, animations, and CRT effects
 - `main.js` — interactive terminal, matrix rain, hover decryption, and UI behavior
 - `.vscode/` — VS Code launch configuration files
-- `computer_vision_feed.png`, `iot_esp32_setup.png` — gallery/assets used by the portfolio
+- `assets/` — directory containing portfolio image assets:
+  - `cyberpunk_workspace.png` — 3D Zero-G Workspace gallery image
+  - `iot_esp32_setup.png` — IoT Development Workbench gallery image
+  - `computer_vision_feed.png` — Computer Vision Analysis gallery image
 
 ## Usage
 
