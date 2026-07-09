@@ -335,6 +335,11 @@
 
 /* -------------------- 7. ACTIVE CONTACT FORM -------------------- */
 (function contactForm(){
+  // To enable real email deliveries to udayangasrimaluni2002@gmail.com:
+  // 1. Create a free account at https://formspree.io
+  // 2. Create a form pointing to your email, and paste the Form ID below:
+  const FORMSPREE_FORM_ID = ""; // e.g. "xqyznvwg"
+
   const form = document.getElementById('contactForm');
   const response = document.getElementById('sshResponse');
   if(!form || !response) return;
@@ -355,6 +360,30 @@
 
     response.innerHTML = '';
     response.style.color = 'var(--green)';
+
+    // Trigger actual Formspree submission in background if ID is set
+    if (FORMSPREE_FORM_ID) {
+      fetch(`https://formspree.io/f/${FORMSPREE_FORM_ID}`, {
+        method: "POST",
+        body: JSON.stringify({
+          name: nameVal,
+          email: emailVal,
+          message: msgVal
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      })
+      .then(res => {
+        if (!res.ok) {
+          console.warn("Formspree transmission failed: status " + res.status);
+        }
+      })
+      .catch(err => {
+        console.error("Network error on Formspree submission:", err);
+      });
+    }
 
     // Step-by-step interactive simulated network terminal log
     const sequence = [
