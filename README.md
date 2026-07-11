@@ -45,7 +45,7 @@ A futuristic portfolio website built with HTML, CSS, and JavaScript. It showcase
 
 ## Contact
 
-- GitHub: [github.com/udayanga-srimal](https://github.com/udayanga-srimal)
+- GitHub: [github.com/HEMUsrimal](https://github.com/HEMUsrimal)
 
 ---
 

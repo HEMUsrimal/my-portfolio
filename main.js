@@ -675,6 +675,17 @@
   const container = document.getElementById('projectsList');
   if (!container) return;
 
+  // Handle clicking on project rows (static or dynamic) via event delegation
+  container.addEventListener('click', (e) => {
+    const row = e.target.closest('.file-row');
+    if (row) {
+      const url = row.getAttribute('data-url');
+      if (url) {
+        window.open(url, '_blank', 'noreferrer noopener');
+      }
+    }
+  });
+
   const username = "HEMUsrimal";
   const apiEndpoint = `https://api.github.com/users/${username}/repos?sort=updated&per_page=12`;
 
@@ -699,6 +710,7 @@
         row.className = 'file-row';
         const desc = repo.description || "Active software deployment block. Integrity verified.";
         row.setAttribute('data-decrypt', desc);
+        row.setAttribute('data-url', repo.html_url);
 
         row.innerHTML = `
           <div class="file-row-top">
@@ -708,10 +720,6 @@
           <div class="decrypt-text" data-default="[file locked — awaiting decryption key]"></div>
           <div class="file-progress"></div>
         `;
-
-        row.addEventListener('click', () => {
-          window.open(repo.html_url, '_blank', 'noreferrer noopener');
-        });
 
         container.appendChild(row);
       });
