@@ -3,12 +3,12 @@
 ==================================================================== */
 
 /* -------------------- 1. INTERACTIVE TERMINAL -------------------- */
-(function interactiveTerminal(){
+(function interactiveTerminal() {
   const bootContainer = document.getElementById('bootSequence');
   const inputRow = document.getElementById('terminalInputRow');
   const terminalInput = document.getElementById('terminalInput');
   const terminalBody = document.getElementById('terminalBody');
-  if(!bootContainer || !inputRow || !terminalInput) return;
+  if (!bootContainer || !inputRow || !terminalInput) return;
 
   const bootLines = [
     "Initializing neural core...",
@@ -20,16 +20,16 @@
 
   let lineIndex = 0;
 
-  function typeLine(text, lineEl, onDone){
+  function typeLine(text, lineEl, onDone) {
     let i = 0;
     const caret = document.createElement('span');
     caret.className = 'cursor-blink';
     caret.textContent = '_';
 
-    function step(){
-      if(text.startsWith('[OK]')){
+    function step() {
+      if (text.startsWith('[OK]')) {
         const okPart = '[OK]';
-        if(i <= okPart.length){
+        if (i <= okPart.length) {
           lineEl.innerHTML = `<span class="ok-tag">${text.slice(0, i)}</span>`;
         } else {
           lineEl.innerHTML = `<span class="ok-tag">${okPart}</span>${escapeHtml(text.slice(okPart.length, i))}`;
@@ -39,16 +39,16 @@
       }
       lineEl.appendChild(caret);
       i++;
-      if(i <= text.length){ setTimeout(step, 14); }
-      else { caret.remove(); if(onDone) onDone(); }
+      if (i <= text.length) { setTimeout(step, 14); }
+      else { caret.remove(); if (onDone) onDone(); }
     }
     step();
   }
 
-  function escapeHtml(str){ return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  
-  function nextLine(){
-    if(lineIndex >= bootLines.length){
+  function escapeHtml(str) { return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  function nextLine() {
+    if (lineIndex >= bootLines.length) {
       inputRow.style.display = 'flex';
       terminalInput.focus();
       return;
@@ -56,21 +56,21 @@
     const lineEl = document.createElement('div');
     lineEl.className = 'boot-line visible';
     bootContainer.appendChild(lineEl);
-    typeLine(bootLines[lineIndex], lineEl, function(){ 
-      lineIndex++; 
+    typeLine(bootLines[lineIndex], lineEl, function () {
+      lineIndex++;
       terminalBody.scrollTop = terminalBody.scrollHeight;
-      setTimeout(nextLine, 80); 
+      setTimeout(nextLine, 80);
     });
   }
 
   setTimeout(nextLine, 400);
 
   // Command Execution Router
-  terminalInput.addEventListener('keydown', function(e) {
+  terminalInput.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
       const cmd = terminalInput.value.trim().toLowerCase();
       terminalInput.value = '';
-      if(!cmd) return;
+      if (!cmd) return;
 
       // Echo user command
       const echoEl = document.createElement('div');
@@ -82,7 +82,7 @@
       responseEl.style.marginBottom = '14px';
       responseEl.style.color = 'var(--ink-dim)';
 
-      switch(cmd) {
+      switch (cmd) {
         case 'help':
           responseEl.innerHTML = `Available commands:<br>
           - <b>about</b>          : Who is H.E.M. Udayanga Srimal?<br>
@@ -139,7 +139,7 @@
           break;
         case 'messages':
           const saved = JSON.parse(localStorage.getItem('sent_messages') || '[]');
-          if(saved.length === 0) {
+          if (saved.length === 0) {
             responseEl.innerHTML = "No secure transmissions detected from this node. Use the contact form below to log a message.";
           } else {
             responseEl.innerHTML = `<b>SECURE ARCHIVES (${saved.length} transmission logs):</b><br>` + saved.map((m, idx) => {
@@ -158,7 +158,7 @@
           break;
       }
 
-      if(cmd !== 'clear') bootContainer.appendChild(responseEl);
+      if (cmd !== 'clear') bootContainer.appendChild(responseEl);
       terminalBody.scrollTop = terminalBody.scrollHeight;
     }
   });
@@ -169,9 +169,9 @@
 })();
 
 /* -------------------- 2. MATRIX DIGITAL RAIN -------------------- */
-(function matrixRain(){
+(function matrixRain() {
   const canvas = document.getElementById('matrix-canvas');
-  if(!canvas) return;
+  if (!canvas) return;
 
   const ctx = canvas.getContext('2d');
   const chars = '01ABCDEF▒▓█▇▆▅▄▃▂▁';
@@ -180,13 +180,13 @@
   let width = 0;
   let height = 0;
 
-  function resize(){
+  function resize() {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
     columns = Array(Math.floor(width / fontSize)).fill(1);
   }
 
-  function draw(){
+  function draw() {
     ctx.fillStyle = 'rgba(6, 7, 6, 0.08)';
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = 'rgba(77, 255, 140, 0.58)';
@@ -195,7 +195,7 @@
       const text = chars.charAt(Math.floor(Math.random() * chars.length));
       const x = index * fontSize;
       ctx.fillText(text, x, y * fontSize);
-      if(y * fontSize > height && Math.random() > 0.98) {
+      if (y * fontSize > height && Math.random() > 0.98) {
         columns[index] = 0;
       }
       columns[index]++;
@@ -209,13 +209,13 @@
 })();
 
 /* -------------------- 3. DECRYPT-ON-HOVER (Projects with Event Delegation) -------------------- */
-(function decryptEffect(){
+(function decryptEffect() {
   const scrambleChars = "!<>-_\\/[]{}—=+*^?#________";
   const scrambleSpeed = 16;
   const revealStagger = 8;
   const animations = new WeakMap();
 
-  document.addEventListener('mouseover', function(e) {
+  document.addEventListener('mouseover', function (e) {
     const row = e.target.closest('.file-row');
     if (!row) return;
 
@@ -223,7 +223,7 @@
     if (!target) return;
 
     const finalText = row.getAttribute('data-decrypt') || '';
-    
+
     if (animations.has(row)) return;
 
     let animState = { frame: null, isAnimating: true };
@@ -232,29 +232,29 @@
     const len = finalText.length;
     const start = performance.now();
 
-    function update(now){
+    function update(now) {
       if (!animState.isAnimating) return;
       const elapsed = now - start;
       const progress = Math.floor(elapsed / scrambleSpeed);
       let out = '';
-      for(let i = 0; i < len; i++){
+      for (let i = 0; i < len; i++) {
         const lockPoint = i * (revealStagger / scrambleSpeed);
         out += progress > lockPoint
           ? finalText[i]
           : (finalText[i] === ' ' ? ' ' : scrambleChars[Math.floor(Math.random() * scrambleChars.length)]);
       }
       target.textContent = out;
-      if(progress < len * (revealStagger / scrambleSpeed) + 6){ 
-        animState.frame = requestAnimationFrame(update); 
-      } else { 
-        target.textContent = finalText; 
-        animState.isAnimating = false; 
+      if (progress < len * (revealStagger / scrambleSpeed) + 6) {
+        animState.frame = requestAnimationFrame(update);
+      } else {
+        target.textContent = finalText;
+        animState.isAnimating = false;
       }
     }
     animState.frame = requestAnimationFrame(update);
   });
 
-  document.addEventListener('mouseout', function(e) {
+  document.addEventListener('mouseout', function (e) {
     const row = e.target.closest('.file-row');
     if (!row) return;
 
@@ -277,11 +277,11 @@
 })();
 
 /* -------------------- 4. STATUS BAR CLOCK -------------------- */
-(function statusClock(){
+(function statusClock() {
   const clock = document.getElementById('statusClock');
-  if(!clock) return;
+  if (!clock) return;
 
-  function update(){
+  function update() {
     const now = new Date();
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
@@ -294,13 +294,13 @@
 })();
 
 /* -------------------- 5. SCROLL REVEAL -------------------- */
-(function scrollReveal(){
+(function scrollReveal() {
   const items = document.querySelectorAll('.reveal');
-  if(!items.length) return;
+  if (!items.length) return;
 
   const observer = new IntersectionObserver((entries, obs) => {
     entries.forEach(entry => {
-      if(entry.isIntersecting){
+      if (entry.isIntersecting) {
         entry.target.classList.add('in-view');
         obs.unobserve(entry.target);
       }
@@ -311,9 +311,9 @@
 })();
 
 /* -------------------- 6. PHOTO GRID -------------------- */
-(function photoGrid(){
+(function photoGrid() {
   const grid = document.getElementById('photoGrid');
-  if(!grid) return;
+  if (!grid) return;
 
   const photos = [
     { src: "assets/cyberpunk_workspace.png", tag: "FEED_01", caption: "3D Zero-G Workspace - Cyberpunk" },
@@ -334,7 +334,7 @@
 })();
 
 /* -------------------- 7. ACTIVE CONTACT FORM -------------------- */
-(function contactForm(){
+(function contactForm() {
   // To enable real email deliveries to udayangasrimaluni2002@gmail.com:
   // 1. Create a free account at https://formspree.io
   // 2. Create a form pointing to your email, and paste the Form ID below:
@@ -342,11 +342,11 @@
 
   const form = document.getElementById('contactForm');
   const response = document.getElementById('sshResponse');
-  if(!form || !response) return;
+  if (!form || !response) return;
 
-  form.addEventListener('submit', function(e){
+  form.addEventListener('submit', function (e) {
     e.preventDefault();
-    
+
     // Get form data
     const nameVal = document.getElementById('f-name').value;
     const emailVal = document.getElementById('f-email').value;
@@ -375,14 +375,14 @@
           'Accept': 'application/json'
         }
       })
-      .then(res => {
-        if (!res.ok) {
-          console.warn("Formspree transmission failed: status " + res.status);
-        }
-      })
-      .catch(err => {
-        console.error("Network error on Formspree submission:", err);
-      });
+        .then(res => {
+          if (!res.ok) {
+            console.warn("Formspree transmission failed: status " + res.status);
+          }
+        })
+        .catch(err => {
+          console.error("Network error on Formspree submission:", err);
+        });
     }
 
     // Step-by-step interactive simulated network terminal log
@@ -404,12 +404,12 @@
       setTimeout(() => {
         const line = document.createElement('div');
         line.textContent = step.text;
-        if(step.color) line.style.color = step.color;
+        if (step.color) line.style.color = step.color;
         response.appendChild(line);
-        
+
         // Auto scroll parent frame
         const scrollContainer = document.querySelector('.ssh-body');
-        if(scrollContainer) scrollContainer.scrollTop = scrollContainer.scrollHeight;
+        if (scrollContainer) scrollContainer.scrollTop = scrollContainer.scrollHeight;
 
         if (index === sequence.length - 1) {
           // Save payload locally so hero terminal 'messages' command actually works
@@ -422,7 +422,7 @@
             submitBtn.textContent = originalBtnText;
             submitBtn.style.pointerEvents = 'auto';
             submitBtn.style.opacity = '1';
-            
+
             // Clear simulated output log after 5s
             setTimeout(() => { response.innerHTML = ''; }, 5000);
           }, 800);
@@ -434,9 +434,9 @@
 })();
 
 /* -------------------- 8. ROTATABLE & TRACKING 3D PARTICLE SERVER GLOBE -------------------- */
-(function particleGlobe(){
+(function particleGlobe() {
   const canvas = document.getElementById('core-canvas');
-  if(!canvas) return;
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const hero = document.getElementById('hero');
 
@@ -460,7 +460,7 @@
 
   // Build grid globe coordinate system of dots
   const particles = [];
-  
+
   // 1. Latitude Circles
   const latRings = 9;
   const dotsPerLat = 22;
@@ -502,7 +502,7 @@
     { x: 0.25, y: -0.2, z: 0.2, size: 5, color: colorMagenta }
   ];
 
-  function resize(){
+  function resize() {
     W = canvas.width = canvas.clientWidth;
     H = canvas.height = canvas.clientHeight;
     radius = Math.min(W, H) * 0.35;
@@ -512,14 +512,14 @@
     // Rotate Y
     let x1 = p.x * Math.cos(rotY) - p.z * Math.sin(rotY);
     let z1 = p.x * Math.sin(rotY) + p.z * Math.cos(rotY);
-    
+
     // Rotate X
     let y2 = p.y * Math.cos(rotX) - z1 * Math.sin(rotX);
     let z2 = p.y * Math.sin(rotX) + z1 * Math.cos(rotX);
 
     const perspective = 3.5;
     const scale = perspective / (perspective + z2);
-    
+
     return {
       x: cx + x1 * radius * scale,
       y: cy + y2 * radius * scale,
@@ -530,9 +530,9 @@
     };
   }
 
-  function draw(){
+  function draw() {
     ctx.clearRect(0, 0, W, H);
-    
+
     const cx = W / 2;
     const cy = H / 2;
 
@@ -561,7 +561,7 @@
 
     const allNodes = [...particles, ...serverNodes];
     const projected = allNodes.map(p => project(p, cx, cy));
-    
+
     // Sort by depth
     projected.sort((a, b) => b.z - a.z);
 
@@ -573,7 +573,7 @@
           if (projected[j].size !== 5 && Math.random() > 0.94) {
             const dx = projected[i].x - projected[j].x;
             const dy = projected[i].y - projected[j].y;
-            const dist = Math.sqrt(dx*dx + dy*dy);
+            const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist < radius * 0.5) {
               ctx.strokeStyle = `rgba(0, 229, 255, ${0.15 * (1.8 - projected[i].z)})`;
               ctx.beginPath();
@@ -606,11 +606,11 @@
   hero.addEventListener('mousemove', (e) => {
     if (isDragging) return;
     isHovered = true;
-    
+
     const rect = canvas.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
-    
+
     const px = (e.clientX - cx) / rect.width;
     const py = (e.clientY - cy) / rect.height;
 
@@ -632,10 +632,10 @@
     if (!isDragging) return;
     const dx = e.clientX - prevX;
     const dy = e.clientY - prevY;
-    
+
     rotY += dx * 0.005;
     rotX += dy * 0.005;
-    
+
     prevX = e.clientX;
     prevY = e.clientY;
   });
@@ -655,10 +655,10 @@
     if (!isDragging || !e.touches[0]) return;
     const dx = e.touches[0].clientX - prevX;
     const dy = e.touches[0].clientY - prevY;
-    
+
     rotY += dx * 0.005;
     rotX += dy * 0.005;
-    
+
     prevX = e.touches[0].clientX;
     prevY = e.touches[0].clientY;
   }, { passive: true });
@@ -671,16 +671,16 @@
 })();
 
 /* -------------------- 9. DYNAMIC GITHUB PROJECTS LOAD -------------------- */
-(function loadGithubProjects(){
+(function loadGithubProjects() {
   const container = document.getElementById('projectsList');
-  if(!container) return;
+  if (!container) return;
 
-  const username = "udayanga-srimal";
+  const username = "HEMUsrimal";
   const apiEndpoint = `https://api.github.com/users/${username}/repos?sort=updated&per_page=12`;
 
   fetch(apiEndpoint)
     .then(res => {
-      if(!res.ok) throw new Error("API rate limit or offline");
+      if (!res.ok) throw new Error("API rate limit or offline");
       return res.json();
     })
     .then(repos => {
@@ -708,7 +708,7 @@
           <div class="decrypt-text" data-default="[file locked — awaiting decryption key]"></div>
           <div class="file-progress"></div>
         `;
-        
+
         row.addEventListener('click', () => {
           window.open(repo.html_url, '_blank', 'noreferrer noopener');
         });
@@ -716,7 +716,7 @@
         container.appendChild(row);
       });
 
-      function escapeHtml(str){ return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+      function escapeHtml(str) { return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
     })
     .catch(err => {
       console.warn("Falling back to static portfolio system: ", err);
