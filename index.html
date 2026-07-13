@@ -15,6 +15,15 @@
 
   <!-- Linked External CSS -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- Import Map for bare specifiers in ESM modules -->
+  <script type="importmap">
+    {
+      "imports": {
+        "motion": "https://cdn.jsdelivr.net/npm/motion@latest/+esm"
+      }
+    }
+  </script>
 </head>
 
 <body>
@@ -50,10 +59,8 @@
       <div class="hero-inner">
         <div class="boot-tag">SYSTEM BOOT SEQUENCE INITIATED <span class="core-status">// CORE: ONLINE</span></div>
 
-        <!-- UPDATE YOUR NAME HERE -->
         <h1 class="hero-name">&gt; H.E.M. Udayanga Srimal<span class="cursor-blink">_</span></h1>
 
-        <!-- UPDATE YOUR JOB TITLE HERE -->
         <div class="hero-role">Software Engineer · Embedded Systems · AI &amp; Edge Computing</div>
 
         <div class="interactive-terminal terminal-panel">
@@ -99,7 +106,6 @@
       <p class="section-sub reveal">Directory listing of active systems, protocols, and hardware interfaces currently
         loaded in memory.</p>
 
-      <!-- UPDATE YOUR SKILLS IN THESE LISTS -->
       <div class="tree-wrap reveal">
 
         <div class="tree-node open">
@@ -177,7 +183,6 @@
       <p class="section-sub reveal">Execution history and professional deployments logged in system memory.</p>
 
       <div class="tree-wrap reveal">
-        <!-- Smart Environmental Monitoring System -->
         <div class="tree-node open">
           <div class="tree-node-head">
             <span class="icon">▣</span> canteen manage/
@@ -192,7 +197,6 @@
           </div>
         </div>
 
-        <!-- EverGreen Greenhouse Incubator -->
         <div class="tree-node open">
           <div class="tree-node-head">
             <span class="icon">▣</span> evergreen_greenhouse/
@@ -206,7 +210,6 @@
           </div>
         </div>
 
-        <!-- High-Performance Computing Cluster -->
         <div class="tree-node open">
           <div class="tree-node-head">
             <span class="icon">▣</span> hpc_cluster/
@@ -230,7 +233,6 @@
         </h2>
       </div>
 
-      <!-- UPDATE YOUR PROJECTS HERE (Change data-decrypt and file-name) -->
       <div class="star-project reveal">
         <div class="star-card">
           <div class="star-card-top">
@@ -343,7 +345,6 @@
       <p class="section-sub reveal">Verified cloud computing and system engineering track credentials.</p>
 
       <div class="tree-wrap reveal">
-        <!-- Google Cloud Track -->
         <div class="tree-node open">
           <div class="tree-node-head">
             <span class="icon">☁</span> gcp_tracks/
@@ -356,7 +357,6 @@
           </div>
         </div>
 
-        <!-- AWS Track -->
         <div class="tree-node">
           <div class="tree-node-head">
             <span class="icon">☁</span> aws_tracks/
@@ -369,7 +369,6 @@
           </div>
         </div>
 
-        <!-- Azure Track -->
         <div class="tree-node">
           <div class="tree-node-head">
             <span class="icon">☁</span> azure_tracks/
@@ -421,7 +420,6 @@
       <p class="section-sub reveal">Aperture configurations, hardware optics, and digital editing workflows.</p>
 
       <div class="tree-wrap reveal">
-        <!-- Brand -->
         <div class="tree-node">
           <div class="tree-node-head">
             <span class="icon">📷</span> brand_profile/
@@ -434,7 +432,6 @@
           </div>
         </div>
 
-        <!-- Gear -->
         <div class="tree-node">
           <div class="tree-node-head">
             <span class="icon">⚙</span> camera_gear/
@@ -447,7 +444,6 @@
           </div>
         </div>
 
-        <!-- Workflow -->
         <div class="tree-node">
           <div class="tree-node-head">
             <span class="icon">⚡</span> post_processing/
@@ -515,8 +511,8 @@
 
   </div>
 
-  <!-- Linked External JS -->
-  <script src="main.js"></script>
+  <!-- CRITICAL UPDATE: type="module" ADDED HERE -->
+  <script type="module" src="main.js"></script>
 </body>
 
 </html>

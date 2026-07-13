@@ -1,6 +1,27 @@
 /* ====================================================================
-   CYBERPUNK PORTFOLIO — MAIN JAVASCRIPT
+   CYBERPUNK PORTFOLIO — MAIN JAVASCRIPT (WITH MOTION ONE & UPGRADES)
 ==================================================================== */
+
+import { animate, inView, stagger, spring } from "motion";
+
+/* --- UTILITY: PERFORMANCE OPTIMIZATION --- */
+// Debounce function prevents expensive functions (like canvas resize) from firing too often
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => { clearTimeout(timeout); func(...args); };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
+/* -------------------- 0. PAGE LOAD ANIMATIONS -------------------- */
+animate("body", { opacity: [0, 1] }, { duration: 0.6, easing: "ease-in-out" });
+animate(
+  ".interactive-terminal, #core-canvas",
+  { opacity: [0, 1], y: [40, 0] },
+  { delay: stagger(0.2), duration: 0.8, easing: [0.16, 1, 0.3, 1] }
+);
 
 /* -------------------- 1. INTERACTIVE TERMINAL -------------------- */
 (function interactiveTerminal() {
@@ -65,14 +86,12 @@
 
   setTimeout(nextLine, 400);
 
-  // Command Execution Router
   terminalInput.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
       const cmd = terminalInput.value.trim().toLowerCase();
       terminalInput.value = '';
       if (!cmd) return;
 
-      // Echo user command
       const echoEl = document.createElement('div');
       echoEl.innerHTML = `<span class="prompt">guest@portfolio:~$</span> ${escapeHtml(cmd)}`;
       echoEl.style.marginBottom = '6px';
@@ -101,42 +120,15 @@
         case 'about':
           responseEl.innerHTML = "<b>H.E.M. Udayanga Srimal</b> — Software Engineer specializing in Embedded Systems, Computer Vision, and AI Edge Computing. Aiming to build robust, offline-capable hardware workflows and intelligent systems.";
           break;
-        case 'skills':
-          responseEl.innerHTML = "Opening stack section...";
-          window.location.hash = '#stack';
-          break;
-        case 'experience':
-          responseEl.innerHTML = "Accessing professional experience logs...";
-          window.location.hash = '#experience';
-          break;
-        case 'projects':
-          responseEl.innerHTML = "Accessing Mainframe Databanks...";
-          window.location.hash = '#projects';
-          break;
-        case 'publications':
-          responseEl.innerHTML = "Accessing publications directory...";
-          window.location.hash = '#publications';
-          break;
-        case 'certifications':
-          responseEl.innerHTML = "Loading certified cloud credentials...";
-          window.location.hash = '#certifications';
-          break;
-        case 'volunteer':
-          responseEl.innerHTML = "Opening community contributions log...";
-          window.location.hash = '#volunteer';
-          break;
-        case 'photography':
-          responseEl.innerHTML = "Initializing Aperture_Core configuration...";
-          window.location.hash = '#photography';
-          break;
-        case 'gallery':
-          responseEl.innerHTML = "Opening Visual Data Logs...";
-          window.location.hash = '#gallery';
-          break;
-        case 'contact':
-          responseEl.innerHTML = "Initializing secure connection to Port 22...";
-          window.location.hash = '#contact';
-          break;
+        case 'skills': window.location.hash = '#stack'; break;
+        case 'experience': window.location.hash = '#experience'; break;
+        case 'projects': window.location.hash = '#projects'; break;
+        case 'publications': window.location.hash = '#publications'; break;
+        case 'certifications': window.location.hash = '#certifications'; break;
+        case 'volunteer': window.location.hash = '#volunteer'; break;
+        case 'photography': window.location.hash = '#photography'; break;
+        case 'gallery': window.location.hash = '#gallery'; break;
+        case 'contact': window.location.hash = '#contact'; break;
         case 'messages':
           const saved = JSON.parse(localStorage.getItem('sent_messages') || '[]');
           if (saved.length === 0) {
@@ -147,15 +139,9 @@
             }).join('<br>');
           }
           break;
-        case 'clear':
-          bootContainer.innerHTML = '';
-          break;
-        case 'sudo':
-          responseEl.innerHTML = "<span style='color:var(--magenta)'>Permission denied. Intrusion event logged. Contacting network security node.</span>";
-          break;
-        default:
-          responseEl.innerHTML = `Unknown protocol: '${escapeHtml(cmd)}'. Type 'help' to review catalog.`;
-          break;
+        case 'clear': bootContainer.innerHTML = ''; break;
+        case 'sudo': responseEl.innerHTML = "<span style='color:var(--magenta)'>Permission denied. Intrusion event logged. Contacting network security node.</span>"; break;
+        default: responseEl.innerHTML = `Unknown protocol: '${escapeHtml(cmd)}'. Type 'help' to review catalog.`; break;
       }
 
       if (cmd !== 'clear') bootContainer.appendChild(responseEl);
@@ -163,12 +149,10 @@
     }
   });
 
-  // Keep terminal focused when clicking its container
   terminalBody.addEventListener('click', () => terminalInput.focus());
-
 })();
 
-/* -------------------- 2. MATRIX DIGITAL RAIN -------------------- */
+/* -------------------- 2. MATRIX DIGITAL RAIN (EFFICIENCY UPGRADED) -------------------- */
 (function matrixRain() {
   const canvas = document.getElementById('matrix-canvas');
   if (!canvas) return;
@@ -204,11 +188,12 @@
   }
 
   resize();
-  window.addEventListener('resize', resize);
+  // Using debounce for better performance on window resize
+  window.addEventListener('resize', debounce(resize, 200));
   draw();
 })();
 
-/* -------------------- 3. DECRYPT-ON-HOVER (Projects with Event Delegation) -------------------- */
+/* -------------------- 3. DECRYPT-ON-HOVER -------------------- */
 (function decryptEffect() {
   const scrambleChars = "!<>-_\\/[]{}—=+*^?#________";
   const scrambleSpeed = 16;
@@ -218,17 +203,13 @@
   document.addEventListener('mouseover', function (e) {
     const row = e.target.closest('.file-row');
     if (!row) return;
-
     const target = row.querySelector('.decrypt-text');
     if (!target) return;
-
     const finalText = row.getAttribute('data-decrypt') || '';
-
     if (animations.has(row)) return;
 
     let animState = { frame: null, isAnimating: true };
     animations.set(row, animState);
-
     const len = finalText.length;
     const start = performance.now();
 
@@ -257,15 +238,12 @@
   document.addEventListener('mouseout', function (e) {
     const row = e.target.closest('.file-row');
     if (!row) return;
-
     const related = e.relatedTarget;
     if (related && row.contains(related)) return;
-
     const target = row.querySelector('.decrypt-text');
     if (!target) return;
 
     const lockedText = target.getAttribute('data-default') || '[file locked — awaiting decryption key]';
-
     const animState = animations.get(row);
     if (animState) {
       cancelAnimationFrame(animState.frame);
@@ -280,7 +258,6 @@
 (function statusClock() {
   const clock = document.getElementById('statusClock');
   if (!clock) return;
-
   function update() {
     const now = new Date();
     const hours = String(now.getHours()).padStart(2, '0');
@@ -288,26 +265,19 @@
     const seconds = String(now.getSeconds()).padStart(2, '0');
     clock.textContent = `${hours}:${minutes}:${seconds}`;
   }
-
   update();
   setInterval(update, 1000);
 })();
 
 /* -------------------- 5. SCROLL REVEAL -------------------- */
 (function scrollReveal() {
-  const items = document.querySelectorAll('.reveal');
-  if (!items.length) return;
-
-  const observer = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in-view');
-        obs.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.14 });
-
-  items.forEach(item => observer.observe(item));
+  inView(".reveal", (info) => {
+    animate(
+      info.target,
+      { opacity: [0, 1], y: [60, 0] },
+      { duration: 0.8, easing: spring({ stiffness: 100, damping: 20 }) }
+    );
+  });
 })();
 
 /* -------------------- 6. PHOTO GRID -------------------- */
@@ -325,67 +295,50 @@
   ];
 
   grid.innerHTML = photos.map(p => `
-    <div class="photo-cell">
+    <div class="photo-cell" style="opacity: 0;">
       <img src="${p.src}" alt="${p.caption}" loading="lazy">
       <div class="photo-tag">${p.tag}</div>
       <div class="photo-caption">${p.caption}</div>
     </div>
   `).join('');
+
+  inView("#photoGrid", () => {
+    animate(
+      ".photo-cell",
+      { opacity: [0, 1], y: [40, 0], scale: [0.95, 1] },
+      { delay: stagger(0.15), duration: 0.7, easing: "ease-out" }
+    );
+  });
 })();
 
 /* -------------------- 7. ACTIVE CONTACT FORM -------------------- */
 (function contactForm() {
-  // To enable real email deliveries to udayangasrimaluni2002@gmail.com:
-  // 1. Create a free account at https://formspree.io
-  // 2. Create a form pointing to your email, and paste the Form ID below:
   const FORMSPREE_FORM_ID = ""; // e.g. "xqyznvwg"
-
   const form = document.getElementById('contactForm');
   const response = document.getElementById('sshResponse');
   if (!form || !response) return;
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-
-    // Get form data
     const nameVal = document.getElementById('f-name').value;
     const emailVal = document.getElementById('f-email').value;
     const msgVal = document.getElementById('f-msg').value;
-
     const submitBtn = form.querySelector('.ssh-submit');
     const originalBtnText = submitBtn.textContent;
     submitBtn.textContent = '[ TRANSMITTING... ]';
     submitBtn.style.pointerEvents = 'none';
     submitBtn.style.opacity = '0.5';
-
     response.innerHTML = '';
     response.style.color = 'var(--green)';
 
-    // Trigger actual Formspree submission in background if ID is set
     if (FORMSPREE_FORM_ID) {
       fetch(`https://formspree.io/f/${FORMSPREE_FORM_ID}`, {
         method: "POST",
-        body: JSON.stringify({
-          name: nameVal,
-          email: emailVal,
-          message: msgVal
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      })
-        .then(res => {
-          if (!res.ok) {
-            console.warn("Formspree transmission failed: status " + res.status);
-          }
-        })
-        .catch(err => {
-          console.error("Network error on Formspree submission:", err);
-        });
+        body: JSON.stringify({ name: nameVal, email: emailVal, message: msgVal }),
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+      }).catch(err => console.error("Network error:", err));
     }
 
-    // Step-by-step interactive simulated network terminal log
     const sequence = [
       { text: "$ initializing handshake protocols...", time: 300 },
       { text: "$ resolving DNS nodes for udayangasrimaluni2002@gmail.com...", time: 400 },
@@ -407,12 +360,10 @@
         if (step.color) line.style.color = step.color;
         response.appendChild(line);
 
-        // Auto scroll parent frame
         const scrollContainer = document.querySelector('.ssh-body');
         if (scrollContainer) scrollContainer.scrollTop = scrollContainer.scrollHeight;
 
         if (index === sequence.length - 1) {
-          // Save payload locally so hero terminal 'messages' command actually works
           const existing = JSON.parse(localStorage.getItem('sent_messages') || '[]');
           existing.push({ name: nameVal, email: emailVal, message: msgVal });
           localStorage.setItem('sent_messages', JSON.stringify(existing));
@@ -422,8 +373,6 @@
             submitBtn.textContent = originalBtnText;
             submitBtn.style.pointerEvents = 'auto';
             submitBtn.style.opacity = '1';
-
-            // Clear simulated output log after 5s
             setTimeout(() => { response.innerHTML = ''; }, 5000);
           }, 800);
         }
@@ -433,7 +382,7 @@
   });
 })();
 
-/* -------------------- 8. ROTATABLE & TRACKING 3D PARTICLE SERVER GLOBE -------------------- */
+/* -------------------- 8. ROTATABLE 3D SERVER GLOBE (EFFICIENCY UPGRADED) -------------------- */
 (function particleGlobe() {
   const canvas = document.getElementById('core-canvas');
   if (!canvas) return;
@@ -452,49 +401,34 @@
   let isDragging = false;
   let prevX = 0, prevY = 0;
 
-  // Resolve color variables dynamically
   const style = getComputedStyle(document.documentElement);
   const colorGreen = style.getPropertyValue('--green').trim() || '#39ff14';
   const colorCyan = style.getPropertyValue('--cyan').trim() || '#00e5ff';
   const colorMagenta = style.getPropertyValue('--magenta').trim() || '#ff007f';
 
-  // Build grid globe coordinate system of dots
   const particles = [];
-
-  // 1. Latitude Circles
-  const latRings = 9;
-  const dotsPerLat = 22;
+  const latRings = 9, dotsPerLat = 22;
   for (let r = 1; r < latRings; r++) {
     const lat = -Math.PI / 2 + (Math.PI * r) / latRings;
     const y = Math.sin(lat);
     const ringRad = Math.cos(lat);
     for (let d = 0; d < dotsPerLat; d++) {
       const lon = (2 * Math.PI * d) / dotsPerLat;
-      const x = ringRad * Math.cos(lon);
-      const z = ringRad * Math.sin(lon);
-      particles.push({ x, y, z, color: colorGreen, isLink: true });
+      particles.push({ x: ringRad * Math.cos(lon), y, z: ringRad * Math.sin(lon), color: colorGreen, isLink: true });
     }
   }
 
-  // 2. Longitude Lines
-  const lonLines = 8;
-  const dotsPerLon = 18;
+  const lonLines = 8, dotsPerLon = 18;
   for (let l = 0; l < lonLines; l++) {
     const lon = (Math.PI * l) / lonLines;
     for (let d = 0; d < dotsPerLon; d++) {
       const lat = -Math.PI / 2 + (Math.PI * d) / dotsPerLon;
-      const x = Math.cos(lat) * Math.cos(lon);
-      const y = Math.sin(lat);
-      const z = Math.cos(lat) * Math.sin(lon);
-      particles.push({ x, y, z, color: colorCyan });
+      particles.push({ x: Math.cos(lat) * Math.cos(lon), y: Math.sin(lat), z: Math.cos(lat) * Math.sin(lon), color: colorCyan });
     }
   }
 
-  // Add poles
-  particles.push({ x: 0, y: 1, z: 0, color: colorMagenta });
-  particles.push({ x: 0, y: -1, z: 0, color: colorMagenta });
+  particles.push({ x: 0, y: 1, z: 0, color: colorMagenta }, { x: 0, y: -1, z: 0, color: colorMagenta });
 
-  // Floating internal server nodes
   const serverNodes = [
     { x: 0.15, y: 0.25, z: -0.15, size: 5, color: colorMagenta },
     { x: -0.2, y: -0.3, z: 0.1, size: 5, color: colorMagenta },
@@ -509,34 +443,20 @@
   }
 
   function project(p, cx, cy) {
-    // Rotate Y
     let x1 = p.x * Math.cos(rotY) - p.z * Math.sin(rotY);
     let z1 = p.x * Math.sin(rotY) + p.z * Math.cos(rotY);
-
-    // Rotate X
     let y2 = p.y * Math.cos(rotX) - z1 * Math.sin(rotX);
     let z2 = p.y * Math.sin(rotX) + z1 * Math.cos(rotX);
-
     const perspective = 3.5;
     const scale = perspective / (perspective + z2);
 
-    return {
-      x: cx + x1 * radius * scale,
-      y: cy + y2 * radius * scale,
-      z: z2,
-      scale: scale,
-      color: p.color,
-      size: p.size || 2.2
-    };
+    return { x: cx + x1 * radius * scale, y: cy + y2 * radius * scale, z: z2, scale: scale, color: p.color, size: p.size || 2.2 };
   }
 
   function draw() {
     ctx.clearRect(0, 0, W, H);
+    const cx = W / 2, cy = H / 2;
 
-    const cx = W / 2;
-    const cy = H / 2;
-
-    // 1. Draw glowing server core gradient
     const coreGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 0.38);
     coreGlow.addColorStop(0, 'rgba(0, 229, 255, 0.3)');
     coreGlow.addColorStop(0.6, 'rgba(255, 0, 127, 0.08)');
@@ -546,55 +466,36 @@
     ctx.arc(cx, cy, radius * 0.38, 0, Math.PI * 2);
     ctx.fill();
 
-    // Rotate handling
-    if (isDragging) {
-      // Direct drag rotation
-    } else if (isHovered) {
-      // Subtly rotate on axis to face the cursor
+    if (isHovered && !isDragging) {
       rotY += (targetRotY - rotY) * 0.06;
       rotX += (targetRotX - rotX) * 0.06;
-    } else {
-      // Idle rotation
+    } else if (!isDragging) {
       rotY += 0.0025;
       rotX += (0.3 - rotX) * 0.06;
     }
 
-    const allNodes = [...particles, ...serverNodes];
-    const projected = allNodes.map(p => project(p, cx, cy));
+    const projected = [...particles, ...serverNodes].map(p => project(p, cx, cy)).sort((a, b) => b.z - a.z);
 
-    // Sort by depth
-    projected.sort((a, b) => b.z - a.z);
-
-    // 2. Draw connections (data routing links) between server nodes and nearby dots
     ctx.lineWidth = 0.5;
     for (let i = 0; i < projected.length; i++) {
-      if (projected[i].size === 5) { // If it is a server node
+      if (projected[i].size === 5) {
         for (let j = 0; j < projected.length; j++) {
           if (projected[j].size !== 5 && Math.random() > 0.94) {
-            const dx = projected[i].x - projected[j].x;
-            const dy = projected[i].y - projected[j].y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < radius * 0.5) {
+            const dx = projected[i].x - projected[j].x, dy = projected[i].y - projected[j].y;
+            if (Math.sqrt(dx * dx + dy * dy) < radius * 0.5) {
               ctx.strokeStyle = `rgba(0, 229, 255, ${0.15 * (1.8 - projected[i].z)})`;
-              ctx.beginPath();
-              ctx.moveTo(projected[i].x, projected[i].y);
-              ctx.lineTo(projected[j].x, projected[j].y);
-              ctx.stroke();
+              ctx.beginPath(); ctx.moveTo(projected[i].x, projected[i].y); ctx.lineTo(projected[j].x, projected[j].y); ctx.stroke();
             }
           }
         }
       }
     }
 
-    // 3. Draw Dots
     projected.forEach(p => {
-      const alpha = Math.max(0.18, Math.min(1, (1.8 - p.z) / 2));
-      const size = Math.max(1, p.scale * p.size);
-
       ctx.beginPath();
-      ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, Math.max(1, p.scale * p.size), 0, Math.PI * 2);
       ctx.fillStyle = p.color;
-      ctx.globalAlpha = alpha;
+      ctx.globalAlpha = Math.max(0.18, Math.min(1, (1.8 - p.z) / 2));
       ctx.fill();
     });
 
@@ -602,71 +503,34 @@
     requestAnimationFrame(draw);
   }
 
-  // Mouse Move Cursor Tracking ("Look At" modifier)
   hero.addEventListener('mousemove', (e) => {
     if (isDragging) return;
     isHovered = true;
-
     const rect = canvas.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-
-    const px = (e.clientX - cx) / rect.width;
-    const py = (e.clientY - cy) / rect.height;
-
-    // Subtle tilt bounds
-    targetRotY = px * 1.6;
-    targetRotX = 0.3 - py * 1.2;
+    targetRotY = ((e.clientX - (rect.left + rect.width / 2)) / rect.width) * 1.6;
+    targetRotX = 0.3 - ((e.clientY - (rect.top + rect.height / 2)) / rect.height) * 1.2;
   });
 
   hero.addEventListener('mouseleave', () => { isHovered = false; });
-
-  // Drag interaction
-  canvas.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    prevX = e.clientX;
-    prevY = e.clientY;
-  });
-
+  canvas.addEventListener('mousedown', (e) => { isDragging = true; prevX = e.clientX; prevY = e.clientY; });
   window.addEventListener('mousemove', (e) => {
     if (!isDragging) return;
-    const dx = e.clientX - prevX;
-    const dy = e.clientY - prevY;
-
-    rotY += dx * 0.005;
-    rotX += dy * 0.005;
-
-    prevX = e.clientX;
-    prevY = e.clientY;
+    rotY += (e.clientX - prevX) * 0.005; rotX += (e.clientY - prevY) * 0.005;
+    prevX = e.clientX; prevY = e.clientY;
   });
-
   window.addEventListener('mouseup', () => { isDragging = false; });
 
-  // Touch Support
-  canvas.addEventListener('touchstart', (e) => {
-    if (e.touches[0]) {
-      isDragging = true;
-      prevX = e.touches[0].clientX;
-      prevY = e.touches[0].clientY;
-    }
-  }, { passive: true });
-
+  canvas.addEventListener('touchstart', (e) => { if (e.touches[0]) { isDragging = true; prevX = e.touches[0].clientX; prevY = e.touches[0].clientY; } }, { passive: true });
   window.addEventListener('touchmove', (e) => {
     if (!isDragging || !e.touches[0]) return;
-    const dx = e.touches[0].clientX - prevX;
-    const dy = e.touches[0].clientY - prevY;
-
-    rotY += dx * 0.005;
-    rotX += dy * 0.005;
-
-    prevX = e.touches[0].clientX;
-    prevY = e.touches[0].clientY;
+    rotY += (e.touches[0].clientX - prevX) * 0.005; rotX += (e.touches[0].clientY - prevY) * 0.005;
+    prevX = e.touches[0].clientX; prevY = e.touches[0].clientY;
   }, { passive: true });
-
   window.addEventListener('touchend', () => { isDragging = false; });
 
   resize();
-  window.addEventListener('resize', resize);
+  // Using debounce for better performance on window resize
+  window.addEventListener('resize', debounce(resize, 200));
   draw();
 })();
 
@@ -675,60 +539,101 @@
   const container = document.getElementById('projectsList');
   if (!container) return;
 
-  // Handle clicking on project rows (static or dynamic) via event delegation
   container.addEventListener('click', (e) => {
     const row = e.target.closest('.file-row');
-    if (row) {
-      const url = row.getAttribute('data-url');
-      if (url) {
-        window.open(url, '_blank', 'noreferrer noopener');
-      }
+    if (row && row.getAttribute('data-url')) {
+      window.open(row.getAttribute('data-url'), '_blank', 'noreferrer noopener');
     }
   });
 
   const username = "HEMUsrimal";
-  const apiEndpoint = `https://api.github.com/users/${username}/repos?sort=updated&per_page=12`;
-
-  fetch(apiEndpoint)
-    .then(res => {
-      if (!res.ok) throw new Error("API rate limit or offline");
-      return res.json();
-    })
+  fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=12`)
+    .then(res => { if (!res.ok) throw new Error("API limit"); return res.json(); })
     .then(repos => {
-      // Filter out forks and sort by star count
-      const sorted = repos
-        .filter(r => !r.fork)
-        .sort((a, b) => b.stargazers_count - a.stargazers_count);
-
+      const sorted = repos.filter(r => !r.fork).sort((a, b) => b.stargazers_count - a.stargazers_count);
       if (sorted.length === 0) return;
 
-      // Clear the static fallback entries
       container.innerHTML = '';
-
       sorted.forEach(repo => {
         const row = document.createElement('div');
         row.className = 'file-row';
-        const desc = repo.description || "Active software deployment block. Integrity verified.";
-        row.setAttribute('data-decrypt', desc);
+        row.style.opacity = '0';
+        row.setAttribute('data-decrypt', repo.description || "Active software deployment block.");
         row.setAttribute('data-url', repo.html_url);
-
         row.innerHTML = `
           <div class="file-row-top">
-            <div class="file-name">${escapeHtml(repo.name)}<span class="ext">.git</span></div>
+            <div class="file-name">${repo.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}<span class="ext">.git</span></div>
             <div class="file-status">★ ${repo.stargazers_count} | ⑂ ${repo.forks_count} — [DECRYPT]</div>
           </div>
           <div class="decrypt-text" data-default="[file locked — awaiting decryption key]"></div>
           <div class="file-progress"></div>
         `;
-
         container.appendChild(row);
       });
 
-      function escapeHtml(str) { return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+      animate(".file-row", { opacity: [0, 1], x: [-30, 0] }, { delay: stagger(0.08), duration: 0.5, easing: "ease-out" });
     })
-    .catch(err => {
-      console.warn("Falling back to static portfolio system: ", err);
-    });
+    .catch(err => console.warn("Falling back to static portfolio system: ", err));
 })();
 
 document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ====================================================================
+   NEW FEATURES ADDED (EFFICIENCY & FRAMER STYLE)
+==================================================================== */
+
+/* -------------------- 10. CUSTOM CYBERPUNK CURSOR -------------------- */
+(function customCursor() {
+  // Create cursor elements dynamically so you don't have to touch HTML
+  const cursorDot = document.createElement('div');
+  const cursorRing = document.createElement('div');
+
+  cursorDot.className = 'cyber-cursor-dot';
+  cursorRing.className = 'cyber-cursor-ring';
+
+  document.body.appendChild(cursorDot);
+  document.body.appendChild(cursorRing);
+
+  let mouseX = 0, mouseY = 0;
+  let ringX = 0, ringY = 0;
+
+  window.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+
+    // Dot follows instantly
+    cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+  });
+
+  // Smooth trailing effect for the ring (Hardware accelerated via requestAnimationFrame)
+  function renderRing() {
+    ringX += (mouseX - ringX) * 0.15; // The 0.15 controls the "drag/lag" smoothness
+    ringY += (mouseY - ringY) * 0.15;
+    cursorRing.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
+    requestAnimationFrame(renderRing);
+  }
+  requestAnimationFrame(renderRing);
+})();
+
+/* -------------------- 11. MAGNETIC BUTTONS (FRAMER EFFECT) -------------------- */
+(function magneticElements() {
+  // Apply magnetic effect to interactive elements like submit buttons or project rows
+  const magneticItems = document.querySelectorAll('.ssh-submit, .file-row-top');
+
+  magneticItems.forEach((item) => {
+    item.addEventListener('mousemove', (e) => {
+      const rect = item.getBoundingClientRect();
+      // Calculate mouse position relative to the center of the element
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+
+      // Pull element towards cursor smoothly
+      animate(item, { x: x * 0.2, y: y * 0.2 }, { duration: 0.2, easing: "ease-out" });
+    });
+
+    // Snap back into place when mouse leaves
+    item.addEventListener('mouseleave', () => {
+      animate(item, { x: 0, y: 0 }, { duration: 0.6, easing: spring({ stiffness: 300, damping: 15 }) });
+    });
+  });
+})();
