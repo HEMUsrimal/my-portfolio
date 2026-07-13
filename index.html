@@ -28,7 +28,8 @@
 </head>
 
 <body>
-
+  <!-- Full-Screen Matrix Rain Background -->
+  <canvas id="matrix-canvas"></canvas>
 
   <!-- ================= PRELOADER SEQUENCE ================= -->
   <div id="preloader" class="preloader">
@@ -45,8 +46,9 @@
       <!-- 2. Avatar & Scroll Prompt (Hidden initially) -->
       <div id="avatar-container" class="avatar-container" style="display: none;">
         <div class="loaded-text" id="loaded-text">[ SYSTEM LOADED ]</div>
-        <div id="preloader-3d-container" style="width: 280px; height: 280px; position: relative; margin: 10px auto;"></div>
-        <img src="assets/image.png" alt="HEM Udayanga Srimal" id="preloader-avatar" style="display: none;">
+        <div id="preloader-3d-container" style="width: 280px; height: 280px; position: relative; margin: 10px auto;">
+        </div>
+        <img src="assets/image.JPG" alt="HEM Udayanga Srimal" id="preloader-avatar" style="display: none;">
         <div id="scroll-prompt" class="scroll-prompt">
           <p>↓↓ SCROLL TO ENTER ↓↓</p>
         </div>
@@ -82,7 +84,6 @@
 
     <!-- HERO SECTION -->
     <section class="hero" id="hero">
-      <canvas id="matrix-canvas"></canvas>
       <canvas id="core-canvas"></canvas>
       <div class="hero-inner">
         <div class="boot-tag">SYSTEM BOOT SEQUENCE INITIATED <span class="core-status">// CORE: ONLINE</span></div>
@@ -200,10 +201,11 @@
     </section>
 
     <!-- EXPERIENCE SECTION -->
-    <!-- 3D Background Scene -->
-    <div id="canvas-3d-container"
-      style="width: 100%; height: 100%; position: absolute; z-index: -1; z-index: -1; pointer-events: none;"></div>
-    <section id="experience">
+    <section id="experience" style="position: relative;">
+      <!-- 3D Background Scene (Subtle backdrop behind experience text) -->
+      <div id="canvas-3d-container"
+        style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: -1; pointer-events: none; opacity: 0.15; filter: blur(1px);">
+      </div>
       <div class="section-head reveal">
         <span class="section-tag">systemctl</span>
         <h2 class="section-title">

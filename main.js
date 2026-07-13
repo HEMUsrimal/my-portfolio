@@ -20,14 +20,16 @@ import * as THREE from 'three';
 const container = document.getElementById('canvas-3d-container');
 if (container) {
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const initWidth = container.clientWidth || window.innerWidth;
+  const initHeight = container.clientHeight || 600;
+  const camera = new THREE.PerspectiveCamera(75, initWidth / initHeight, 0.1, 1000);
   const renderer = new THREE.WebGLRenderer({ alpha: true }); // alpha: true makes background transparent
 
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(initWidth, initHeight);
   container.appendChild(renderer.domElement);
 
   // 2. Create a 3D Object (A glowing Cyberpunk Wireframe Cube)
-  const geometry = new THREE.BoxGeometry(2, 2, 2);
+  const geometry = new THREE.BoxGeometry(2.5, 2.5, 2.5); // Slightly larger cube to fit the background nicely
   const material = new THREE.MeshBasicMaterial({
     color: 0x00e5ff, // Cyan
     wireframe: true  // Gives it that hacker/terminal vibe
@@ -42,19 +44,21 @@ if (container) {
     requestAnimationFrame(animate3D);
 
     // Rotate the object on its axes
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    cube.rotation.x += 0.006;
+    cube.rotation.y += 0.006;
 
     renderer.render(scene, camera);
   }
 
   animate3D();
 
-  // Resize handler to keep the canvas responsive
+  // Resize handler to keep the canvas responsive to its parent size
   window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    const w = container.clientWidth || window.innerWidth;
+    const h = container.clientHeight || 600;
+    camera.aspect = w / h;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(w, h);
   });
 }
 
@@ -63,13 +67,260 @@ if (container) {
   const preloader = document.getElementById('preloader');
   const loadingPhase = document.getElementById('loading-phase');
   const avatarContainer = document.getElementById('avatar-container');
-  const avatarImg = document.getElementById('preloader-avatar');
+  const faceContainer = document.getElementById('preloader-3d-container');
 
-  if (!preloader || !loadingPhase || !avatarContainer || !avatarImg) return;
+  if (!preloader || !loadingPhase || !avatarContainer || !faceContainer) return;
 
   // Lock scrolling while preloader is active
   document.body.style.overflow = 'hidden';
   window.scrollTo(0, 0); // Always start at the very top
+
+  // Preloader 3D Face Setup
+  const fScene = new THREE.Scene();
+  const fCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+  const fRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  fRenderer.setSize(280, 280);
+  fRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  faceContainer.appendChild(fRenderer.domElement);
+
+  fCamera.position.z = 12.0; // Zoomed in camera position to scale up the 3D image size in the viewport
+
+  let particleSystem;
+  let geometry;
+  let material;
+  let velocities = [];
+  let isExploding = false;
+  let explosionProgress = 0;
+
+  // Load the image to parse it into 3D particles
+  const img = new Image();
+  img.src = 'assets/image.JPG';
+  img.crossOrigin = 'anonymous';
+  img.onload = function () {
+    const imgCanvas = document.createElement('canvas');
+    // Aspect-ratio matching resolution for 413:531
+    const sizeX = 80;
+    const sizeY = 104;
+    imgCanvas.width = sizeX;
+    imgCanvas.height = sizeY;
+    const imgCtx = imgCanvas.getContext('2d');
+
+    // Draw the entire image without cropping to show the full head and body
+    imgCtx.drawImage(img, 0, 0, img.width, img.height, 0, 0, sizeX, sizeY);
+
+    const imgData = imgCtx.getImageData(0, 0, sizeX, sizeY).data;
+
+    const positions = [];
+    const origPositions = [];
+    const colors = [];
+    const baseColors = []; // Storing base colors to reference in scan sweep brightness calculation
+    const spacing = 0.098; // Increased spacing to spread the dots out by 30% (less dense, clearer features)
+
+    // 1. Build background color profiles from margins to perform clean chroma-keying
+    const bgProfile = [];
+    const getPixel = (px, py) => {
+      const idx = (py * sizeX + px) * 4;
+      return { r: imgData[idx], g: imgData[idx + 1], b: imgData[idx + 2] };
+    };
+
+    // Sample from left border (x = 2), right border (x = sizeX - 3), and top border (y = 2)
+    for (let y = 0; y < sizeY; y += 4) {
+      bgProfile.push(getPixel(2, y));
+      bgProfile.push(getPixel(sizeX - 3, y));
+    }
+    for (let x = 0; x < sizeX; x += 4) {
+      bgProfile.push(getPixel(x, 2));
+    }
+
+    for (let y = 0; y < sizeY; y++) {
+      for (let x = 0; x < sizeX; x++) {
+        // Normalized coordinates (0 to 1)
+        const nx = x / sizeX;
+        const ny = y / sizeY;
+
+        const idx = (y * sizeX + x) * 4;
+        const r = imgData[idx];
+        const g = imgData[idx + 1];
+        const b = imgData[idx + 2];
+        const a = imgData[idx + 3];
+
+        if (a < 50) continue;
+
+        // Skip background pixels by checking Euclidean distance in RGB color space
+        let minDistance = 255;
+        for (let i = 0; i < bgProfile.length; i++) {
+          const bg = bgProfile[i];
+          const dist = Math.sqrt(
+            Math.pow(r - bg.r, 2) +
+            Math.pow(g - bg.g, 2) +
+            Math.pow(b - bg.b, 2)
+          );
+          if (dist < minDistance) {
+            minDistance = dist;
+          }
+        }
+        // If color matches the margin background profile close enough, skip it
+        if (minDistance < 32) continue;
+
+        const l = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+        // Space coordinates centered at (0, 0)
+        const px = (x - sizeX / 2) * spacing;
+        const py = -(y - sizeY / 2) * spacing;
+
+        // Remove barrel distortion: Keep the projection flat with a very subtle horizontal curvature
+        const dx = nx - 0.5;
+        const curveZ = (1.0 - (dx * dx) * 4.0) * 0.25; // Very subtle rounding (max 0.25 depth) to prevent warping the face/body
+
+        // Maintain sharp, accurate face/body detail depth directly from image luminance
+        const detailZ = l * 0.65;
+        const pz = curveZ + detailZ - 0.45;
+
+        positions.push(px, py, pz);
+        origPositions.push(px, py, pz);
+
+        const color = new THREE.Color();
+        // Theme Colors: Head (Cyan), Torso (Emerald), Hips (Magenta)
+        if (ny < 0.32) {
+          color.setRGB(0.0, 0.85, 1.0); // Neon Cyan
+        } else if (ny < 0.68) {
+          color.setRGB(0.1, 0.95, 0.4); // Neon Emerald Green
+        } else {
+          color.setRGB(1.0, 0.0, 0.5); // Neon Violet/Magenta
+        }
+
+        // Apply shade factoring using luminance
+        color.multiplyScalar(0.45 + l * 0.55);
+
+        colors.push(color.r, color.g, color.b);
+        baseColors.push(color.r, color.g, color.b);
+
+        velocities.push(
+          (Math.random() - 0.5) * 0.1 + px * 0.15,
+          (Math.random() - 0.5) * 0.1 + py * 0.15,
+          (Math.random() - 0.5) * 0.1 + pz * 0.15
+        );
+      }
+    }
+
+    geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+    // Dynamic procedural creation of a soft glow circle particle texture
+    function createGlowTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 16;
+      canvas.height = 16;
+      const ctx = canvas.getContext('2d');
+      const grad = ctx.createRadialGradient(8, 8, 0, 8, 8, 8);
+      grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
+      grad.addColorStop(0.35, 'rgba(0, 229, 255, 0.6)');
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 16, 16);
+      return new THREE.CanvasTexture(canvas);
+    }
+
+    material = new THREE.PointsMaterial({
+      size: 0.15, // Soft glowing circular particle sizes (increased for visibility)
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.0, // Fade in initially
+      blending: THREE.AdditiveBlending,
+      map: createGlowTexture(),
+      depthWrite: false
+    });
+
+    particleSystem = new THREE.Points(geometry, material);
+    fScene.add(particleSystem);
+
+    let time = 0;
+
+    function render() {
+      requestAnimationFrame(render);
+      time += 0.015;
+
+      if (particleSystem) {
+        if (!isExploding) {
+          // 1. Slow idle rotation
+          particleSystem.rotation.y += 0.005;
+
+          // 2. Slow breathing wiggle and sweep scanline highlighting
+          const posAttr = geometry.attributes.position;
+          const posArray = posAttr.array;
+
+          const colorAttr = geometry.attributes.color;
+          const colorArray = colorAttr.array;
+
+          // Scanning sweep wave moving vertically
+          const sweepY = Math.sin(time * 1.5) * 4.0;
+
+          for (let i = 0; i < posArray.length; i += 3) {
+            const idx = i / 3;
+            const origPx = origPositions[idx * 3];
+            const origPy = origPositions[idx * 3 + 1];
+            const origPz = origPositions[idx * 3 + 2];
+
+            // Breathing noise drift
+            posArray[i] = origPx + Math.sin(time * 2.0 + origPy * 3.0) * 0.03;
+            posArray[i + 1] = origPy + Math.cos(time * 1.5 + origPx * 3.0) * 0.02;
+            posArray[i + 2] = origPz + Math.sin(time + origPx * 2.0) * 0.03;
+
+            // Sweeper highlight
+            const distToSweep = Math.abs(posArray[i + 1] - sweepY);
+            const baseR = baseColors[idx * 3];
+            const baseG = baseColors[idx * 3 + 1];
+            const baseB = baseColors[idx * 3 + 2];
+
+            if (distToSweep < 0.45) {
+              const boost = 1.0 + (1.0 - distToSweep / 0.45) * 1.3; // Glow wave boost
+              colorArray[idx * 3] = Math.min(1.0, baseR * boost);
+              colorArray[idx * 3 + 1] = Math.min(1.0, baseG * boost);
+              colorArray[idx * 3 + 2] = Math.min(1.0, baseB * boost);
+            } else {
+              colorArray[idx * 3] = baseR;
+              colorArray[idx * 3 + 1] = baseG;
+              colorArray[idx * 3 + 2] = baseB;
+            }
+          }
+
+          posAttr.needsUpdate = true;
+          colorAttr.needsUpdate = true;
+
+          if (material.opacity < 1.0) {
+            material.opacity += 0.02; // Fade in smoothly
+          }
+        } else {
+          // Explode points
+          const posAttr = geometry.attributes.position;
+          const posArray = posAttr.array;
+
+          explosionProgress += 0.015;
+
+          for (let i = 0; i < posArray.length; i += 3) {
+            const idx = i / 3;
+            posArray[i] += velocities[idx * 3] * 0.4;
+            posArray[i + 1] += velocities[idx * 3 + 1] * 0.4;
+            posArray[i + 2] += velocities[idx * 3 + 2] * 0.4;
+          }
+
+          posAttr.needsUpdate = true;
+          particleSystem.rotation.y += 0.05;
+          fCamera.position.z += 0.15;
+          material.opacity = Math.max(0, 1 - explosionProgress * 1.5);
+        }
+      }
+
+      fRenderer.render(fScene, fCamera);
+    }
+
+    render();
+  };
+
+  window.triggerPreloader3DExplosion = function () {
+    isExploding = true;
+  };
 
   // Step 1: 3-Second Loading Phase
   setTimeout(() => {
@@ -78,9 +329,7 @@ if (container) {
       loadingPhase.style.display = 'none';
       avatarContainer.style.display = 'flex';
 
-      // Step 2: Pop the avatar, "LOADED", and "SCROLL" in smoothly
-      animate(avatarImg, { opacity: [0, 1] }, { duration: 0.6, easing: "ease-out" });
-      animate(avatarImg, { scale: [0.3, 1] }, { type: spring, stiffness: 150, damping: 12 });
+      // Step 2: Pop the preloader text elements in smoothly
       animate(".loaded-text", { opacity: [0, 1], y: [-15, 0] }, { delay: 0.2, duration: 0.6, easing: "ease-out" });
       animate("#scroll-prompt", { opacity: [0, 1], y: [15, 0] }, { delay: 0.4, duration: 0.6, easing: "ease-out" });
 
@@ -110,17 +359,20 @@ if (container) {
     // Hide text instantly
     animate(".loaded-text, #scroll-prompt", { opacity: 0, scale: 0.8 }, { duration: 0.2 });
 
-    // The 3D Magic Transition: Flips in 3D space and zooms in
-    animate(avatarImg,
+    // Trigger the 3D particle explosion
+    if (window.triggerPreloader3DExplosion) {
+      window.triggerPreloader3DExplosion();
+    }
+
+    // Zoom the 3D container
+    animate(faceContainer,
       {
-        scale: 150,
-        rotateY: 720,  // 3D Spin (Horizontal - 2 full flips)
-        rotateX: -30,  // Slight 3D tilt for a cooler effect
-        opacity: [1, 1, 1, 0] // Fade out at the end
+        scale: 6,
+        opacity: [1, 1, 0]
       },
       {
-        duration: 1.5, // 1.5 seconds for the 3D dive
-        easing: [0.7, 0, 0.84, 0] // Sudden acceleration swoosh
+        duration: 1.5,
+        easing: [0.7, 0, 0.84, 0]
       }
     );
 
