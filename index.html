@@ -27,7 +27,32 @@
 </head>
 
 <body>
+  <!-- ================= PRELOADER SEQUENCE ================= -->
+  <!-- ================= PRELOADER SEQUENCE ================= -->
+  <div id="preloader" class="preloader">
+    <div class="preloader-content">
 
+      <!-- 1. Loading Phase (4 Seconds Animation) -->
+      <div id="loading-phase">
+        <div id="loading-text">INITIALIZING...</div>
+        <div class="loading-bar-container">
+          <div class="loading-bar"></div>
+        </div>
+      </div>
+
+      <!-- 2. Avatar & Scroll Prompt (Hidden initially) -->
+      <div id="avatar-container" class="avatar-container" style="display: none;">
+        <div class="loaded-text" id="loaded-text">[ SYSTEM LOADED ]</div>
+        <img src="assets/image.png" alt="HEM Udayanga Srimal" id="preloader-avatar">
+        <div id="scroll-prompt" class="scroll-prompt">
+          <p>↓↓ SCROLL TO ENTER ↓↓</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ====================================================== -->
   <div class="bg-grid"></div>
   <div class="crt-overlay"></div>
   <div class="crt-flicker"></div>
