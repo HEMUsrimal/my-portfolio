@@ -180,7 +180,8 @@ body {
   background-size: 100% 4px;
   z-index: 999;
   pointer-events: none;
-  opacity: 0.3; /* Softened scanlines to ensure clear readability */
+  opacity: 0.3;
+  /* Softened scanlines to ensure clear readability */
 }
 
 .vignette {
@@ -247,7 +248,8 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  pointer-events: auto; /* Clickable */
+  pointer-events: auto;
+  /* Clickable */
   color: var(--cyan);
   text-decoration: none;
   font-size: 13px;
@@ -311,9 +313,12 @@ section {
   left: 0;
   width: 100vw;
   height: 100vh;
-  opacity: 0.15; /* Extremely subtle 15% opacity to sit elegantly in the background */
-  z-index: -2;   /* Placed behind all content containers */
-  pointer-events: none; /* Let clicks pass through it */
+  opacity: 0.15;
+  /* Extremely subtle 15% opacity to sit elegantly in the background */
+  z-index: -2;
+  /* Placed behind all content containers */
+  pointer-events: none;
+  /* Let clicks pass through it */
 }
 
 .hero-inner {
