@@ -686,8 +686,12 @@ if (container) {
 
 /* -------------------- 7. ACTIVE CONTACT FORM -------------------- */
 (function contactForm() {
-  const FORMSPREE_FORM_ID = ""; // e.g. "xqyznvwg"
-  const form = document.getElementById('contactForm');
+  // Initialize EmailJS
+  if (typeof emailjs !== 'undefined') {
+    emailjs.init("blxXKEpaHDQfM33-4");
+  }
+
+  const form = document.getElementById('terminal-contact-form');
   const response = document.getElementById('sshResponse');
   if (!form || !response) return;
 
@@ -696,22 +700,16 @@ if (container) {
     const nameVal = document.getElementById('f-name').value;
     const emailVal = document.getElementById('f-email').value;
     const msgVal = document.getElementById('f-msg').value;
-    const submitBtn = form.querySelector('.ssh-submit');
-    const originalBtnText = submitBtn.textContent;
+    const submitBtn = document.getElementById('transmit-btn');
+    const originalBtnText = "[ TRANSMIT MESSAGE ]";
+
     submitBtn.textContent = '[ TRANSMITTING... ]';
     submitBtn.style.pointerEvents = 'none';
     submitBtn.style.opacity = '0.5';
     response.innerHTML = '';
     response.style.color = 'var(--green)';
 
-    if (FORMSPREE_FORM_ID) {
-      fetch(`https://formspree.io/f/${FORMSPREE_FORM_ID}`, {
-        method: "POST",
-        body: JSON.stringify({ name: nameVal, email: emailVal, message: msgVal }),
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
-      }).catch(err => console.error("Network error:", err));
-    }
-
+    // Cyberpunk step sequence logging
     const sequence = [
       { text: "$ initializing handshake protocols...", time: 300 },
       { text: "$ resolving DNS nodes for udayangasrimaluni2002@gmail.com...", time: 400 },
@@ -720,9 +718,7 @@ if (container) {
       { text: "$ packaging secure payload...", time: 400 },
       { text: "$ sending payload packets [======    ] 60%...", time: 500 },
       { text: "$ sending payload packets [==========] 100%...", time: 300 },
-      { text: "$ transaction registered. calculating cryptographic checksum...", time: 450 },
-      { text: "$ [SUCCESS] payload securely transmitted to udayangasrimaluni2002@gmail.com.", color: "var(--cyan)", time: 400 },
-      { text: "$ [LOGGED] local record registered under 'messages' profile.", color: "var(--green)", time: 200 }
+      { text: "$ transaction registered. calculating cryptographic checksum...", time: 450 }
     ];
 
     let delay = 0;
@@ -735,23 +731,65 @@ if (container) {
 
         const scrollContainer = document.querySelector('.ssh-body');
         if (scrollContainer) scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }, delay);
+      delay += step.time;
+    });
 
-        if (index === sequence.length - 1) {
+    // Trigger EmailJS dispatch
+    emailjs.sendForm('service_1jp6jz7', 'template_4s2acm3', e.target, 'blxXKEpaHDQfM33-4')
+      .then(function() {
+        // On Success
+        setTimeout(() => {
+          const lineSuccess = document.createElement('div');
+          lineSuccess.textContent = "$ [SUCCESS] payload securely transmitted to udayangasrimaluni2002@gmail.com.";
+          lineSuccess.style.color = "var(--cyan)";
+          response.appendChild(lineSuccess);
+
+          const lineLogged = document.createElement('div');
+          lineLogged.textContent = "$ [LOGGED] local record registered under 'messages' profile.";
+          lineLogged.style.color = "var(--green)";
+          response.appendChild(lineLogged);
+
+          const scrollContainer = document.querySelector('.ssh-body');
+          if (scrollContainer) scrollContainer.scrollTop = scrollContainer.scrollHeight;
+
+          submitBtn.innerHTML = '<span style="color: var(--green);">[ TRANSMISSION SUCCESSFUL ]</span>';
+          submitBtn.style.opacity = '1';
+
           const existing = JSON.parse(localStorage.getItem('sent_messages') || '[]');
           existing.push({ name: nameVal, email: emailVal, message: msgVal });
           localStorage.setItem('sent_messages', JSON.stringify(existing));
 
+          form.reset();
+
           setTimeout(() => {
-            form.reset();
             submitBtn.textContent = originalBtnText;
             submitBtn.style.pointerEvents = 'auto';
-            submitBtn.style.opacity = '1';
             setTimeout(() => { response.innerHTML = ''; }, 5000);
-          }, 800);
-        }
-      }, delay);
-      delay += step.time;
-    });
+          }, 4000);
+        }, Math.max(delay, 2000));
+      })
+      .catch(error => {
+        // On Error
+        console.error("EmailJS Detailed Error:", error.text || error);
+        setTimeout(() => {
+          const lineError = document.createElement('div');
+          lineError.textContent = "$ [ERROR] secure transmission protocol failed. connection abort.";
+          lineError.style.color = "var(--magenta)";
+          response.appendChild(lineError);
+
+          const scrollContainer = document.querySelector('.ssh-body');
+          if (scrollContainer) scrollContainer.scrollTop = scrollContainer.scrollHeight;
+
+          submitBtn.innerHTML = '<span style="color: var(--magenta);">[ CONNECTION FAILED - RETRY ]</span>';
+          submitBtn.style.opacity = '1';
+          submitBtn.style.pointerEvents = 'auto';
+
+          setTimeout(() => {
+            submitBtn.textContent = originalBtnText;
+          }, 4000);
+        }, Math.max(delay, 2000));
+      });
   });
 })();
 

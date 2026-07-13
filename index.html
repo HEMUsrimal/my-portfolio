@@ -25,6 +25,7 @@
       }
     }
   </script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 
 <body>
@@ -404,6 +405,7 @@
         <div class="star-card">
           <div class="star-card-top">
             <span class="badge">★ RESEARCH ABSTRACT</span>
+            <a class="star-link" href="https://www.linkedin.com/posts/udayanga-srimal-6418a0293_research-intelligenttransportationsystems-ugcPost-7463225251494174721-CW4e/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAEck_ZEBNeO2yYH5NyRCTNYvyhWGGP9OWzE" target="_blank" rel="noreferrer noopener">View LinkedIn Post</a>
           </div>
           <h3>Intelligent Transportation Systems for Bus Arrival Prediction</h3>
           <p>A systematic review covering 78 publications and predictive architectures, evaluating the evolution,
@@ -555,14 +557,27 @@
       <p class="section-sub reveal">Aperture configurations, hardware optics, and digital editing workflows.</p>
 
       <div class="tree-wrap reveal">
-        <div class="tree-node">
+        <div class="tree-node open">
           <div class="tree-node-head">
             <span class="icon">📷</span> brand_profile/
           </div>
           <div class="tree-content">
             <ul class="tree-list">
               <li><b>Udayanga Srimal Photography</b></li>
-              <li>Focus: <span style="color:var(--cyan)">Professional Photography & Visuals</span></li>
+              <li>Focus: <span style="color:var(--cyan)">Graduation Shoots &amp; Event Photography</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="tree-node open">
+          <div class="tree-node-head">
+            <span class="icon">🔗</span> live_galleries/
+          </div>
+          <div class="tree-content">
+            <ul class="tree-list">
+              <li><b>Pixieset Portfolio Site</b> — Professional photography platform showcasing curated galleries. [Link: <a href="https://udayangasrimalphotography.mypixieset.com/" target="_blank" style="color:var(--cyan); font-family:var(--font-mono); text-decoration:underline;">Pixieset Site</a>]</li>
+              <li><b>Dream Cloak (Graduation Shoots)</b> — Capturing academic milestones and cinematic graduation portraits. [Link: <a href="https://www.facebook.com/share/18v6H1sZvQ/?mibextid=wwXIfr" target="_blank" style="color:var(--cyan); font-family:var(--font-mono); text-decoration:underline;">Facebook Page</a>]</li>
+              <li><b>Event Photography</b> — Professional coverage for corporate, faculty, and entertainment events. [Link: <a href="https://www.facebook.com/share/1YYZ1nsGPV/?mibextid=wwXIfr" target="_blank" style="color:var(--cyan); font-family:var(--font-mono); text-decoration:underline;">Facebook Page</a>]</li>
             </ul>
           </div>
         </div>
@@ -615,20 +630,20 @@
         </div>
         <div class="ssh-body">
           <div class="ssh-line"><span class="prompt">$</span> connecting to udayangasrimaluni2002@gmail.com...</div>
-          <form id="contactForm">
+          <form id="terminal-contact-form">
             <div class="form-field">
               <label for="f-name">identify_yourself</label>
-              <input id="f-name" name="name" type="text" placeholder="your name" required>
+              <input id="f-name" name="from_name" type="text" placeholder="your name" required>
             </div>
             <div class="form-field">
               <label for="f-email">return_channel</label>
-              <input id="f-email" name="email" type="email" placeholder="your@email.com" required>
+              <input id="f-email" name="reply_to" type="email" placeholder="your@email.com" required>
             </div>
             <div class="form-field">
               <label for="f-msg">payload</label>
               <textarea id="f-msg" name="message" rows="4" placeholder="type your message..." required></textarea>
             </div>
-            <button type="submit" class="ssh-submit">[ TRANSMIT MESSAGE ]</button>
+            <button type="submit" class="ssh-submit" id="transmit-btn">[ TRANSMIT MESSAGE ]</button>
             <div class="ssh-response" id="sshResponse"></div>
             <div
               style="text-align: center; margin-top: 20px; font-size: 11px; color: var(--ink-faint); font-family: var(--font-display);">
