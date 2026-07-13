@@ -809,6 +809,82 @@ if (container) {
     { x: 0.25, y: -0.2, z: 0.2, size: 5, color: colorMagenta }
   ];
 
+  // 3D Orbital Saturn-like Inner Ring Text: "this is udayanga world"
+  const textParticles = [];
+  const textString = " ✦ this is udayanga world ✦ this is udayanga world ";
+  const textRadius = 1.18; // Inner Saturn ring radius
+  const tiltX = 0.45;      // Slanted front-to-back
+  const tiltZ = 0.15;      // Slanted side-to-side
+
+  for (let i = 0; i < textString.length; i++) {
+    const angle = (i / textString.length) * Math.PI * 2;
+    const rx = Math.cos(angle) * textRadius;
+    const ry = 0;
+    const rz = Math.sin(angle) * textRadius;
+
+    // Apply Saturn tilt rotations
+    const x1 = rx;
+    const y1 = ry * Math.cos(tiltX) - rz * Math.sin(tiltX);
+    const z1 = ry * Math.sin(tiltX) + rz * Math.cos(tiltX);
+
+    const x2 = x1 * Math.cos(tiltZ) - y1 * Math.sin(tiltZ);
+    const y2 = x1 * Math.sin(tiltZ) + y1 * Math.cos(tiltZ);
+    const z2 = z1;
+
+    textParticles.push({
+      x: x2,
+      y: y2,
+      z: z2,
+      char: textString[i],
+      color: colorMagenta // Neon magenta color
+    });
+  }
+
+  /* --- NEW: SATURN RING 3D NAVIGATION (HTML ELEMENTS) --- */
+  const navLinksData = [
+    { name: "01_stack", hash: "#stack" },
+    { name: "02_experience", hash: "#experience" },
+    { name: "03_projects", hash: "#projects" },
+    { name: "04_publications", hash: "#publications" },
+    { name: "05_certifications", hash: "#certifications" },
+    { name: "06_volunteer", hash: "#volunteer" },
+    { name: "07_photography", hash: "#photography" },
+    { name: "08_contact", hash: "#contact" }
+  ];
+
+  // Find relative canvas wrapper so HTML overlay moves exactly with the 3D canvas!
+  const canvasWrapper = canvas.parentElement || hero;
+  const orbitContainer = document.createElement('div');
+  orbitContainer.className = 'orbit-container';
+  canvasWrapper.appendChild(orbitContainer);
+
+  const orbitRadius = 1.58; // Outer Saturn ring radius
+  const orbitTiltX = 0.45;  // Same slant to align parallel
+  const orbitTiltZ = 0.15;
+
+  const orbitElements = navLinksData.map((link, index) => {
+    const el = document.createElement('a');
+    el.href = link.hash;
+    el.className = 'orbit-link reveal'; // Added reveal so it triggers hover custom cursor
+    el.textContent = link.name;
+
+    // Smooth scrolling for links
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetEl = document.querySelector(link.hash);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth' });
+        window.location.hash = link.hash;
+      }
+    });
+
+    orbitContainer.appendChild(el);
+    return {
+      el: el,
+      baseAngle: (index / navLinksData.length) * Math.PI * 2 // Distribute in a perfect circle
+    };
+  });
+
   function resize() {
     W = canvas.width = canvas.clientWidth;
     H = canvas.height = canvas.clientHeight;
@@ -847,13 +923,17 @@ if (container) {
       rotX += (0.3 - rotX) * 0.06;
     }
 
-    const projected = [...particles, ...serverNodes].map(p => project(p, cx, cy)).sort((a, b) => b.z - a.z);
+    const projected = [...particles, ...serverNodes, ...textParticles].map(p => {
+      const proj = project(p, cx, cy);
+      if (p.char) proj.char = p.char;
+      return proj;
+    }).sort((a, b) => b.z - a.z);
 
     ctx.lineWidth = 0.5;
     for (let i = 0; i < projected.length; i++) {
       if (projected[i].size === 5) {
         for (let j = 0; j < projected.length; j++) {
-          if (projected[j].size !== 5 && Math.random() > 0.94) {
+          if (projected[j].size !== 5 && !projected[j].char && Math.random() > 0.94) {
             const dx = projected[i].x - projected[j].x, dy = projected[i].y - projected[j].y;
             if (Math.sqrt(dx * dx + dy * dy) < radius * 0.5) {
               ctx.strokeStyle = `rgba(0, 229, 255, ${0.15 * (1.8 - projected[i].z)})`;
@@ -866,13 +946,62 @@ if (container) {
 
     projected.forEach(p => {
       ctx.beginPath();
-      ctx.arc(p.x, p.y, Math.max(1, p.scale * p.size), 0, Math.PI * 2);
-      ctx.fillStyle = p.color;
-      ctx.globalAlpha = Math.max(0.18, Math.min(1, (1.8 - p.z) / 2));
-      ctx.fill();
+      if (p.char) {
+        // Draw 3D projected character
+        ctx.font = `bold ${Math.max(9, Math.round(p.scale * 13))}px monospace`;
+        ctx.fillStyle = p.color;
+        // Text opacity fades out towards the back of the sphere
+        ctx.globalAlpha = Math.max(0.08, Math.min(1.0, (1.8 - p.z) / 2));
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(p.char, p.x, p.y);
+      } else {
+        // Draw standard particle dot
+        ctx.arc(p.x, p.y, Math.max(1, p.scale * p.size), 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = Math.max(0.18, Math.min(1, (1.8 - p.z) / 2));
+        ctx.fill();
+      }
     });
 
     ctx.globalAlpha = 1.0;
+
+    /* --- NEW: UPDATE HTML ORBIT NAV POSITIONS IN REAL-TIME --- */
+    const orbitTime = Date.now() * 0.0002; // Speed of the spinning ring
+
+    orbitElements.forEach(item => {
+      // Calculate 3D point on the ring
+      const currentAngle = item.baseAngle + orbitTime;
+      const rx = Math.cos(currentAngle) * orbitRadius;
+      const ry = 0;
+      const rz = Math.sin(currentAngle) * orbitRadius;
+
+      // Apply Saturn tilt rotations so the HTML buttons rotate parallel to the text ring
+      const x1 = rx;
+      const y1 = ry * Math.cos(orbitTiltX) - rz * Math.sin(orbitTiltX);
+      const z1 = ry * Math.sin(orbitTiltX) + rz * Math.cos(orbitTiltX);
+
+      const x2 = x1 * Math.cos(orbitTiltZ) - y1 * Math.sin(orbitTiltZ);
+      const y2 = x1 * Math.sin(orbitTiltZ) + y1 * Math.cos(orbitTiltZ);
+      const z2 = z1;
+
+      const point3D = { x: x2, y: y2, z: z2 };
+
+      // Project to 2D HTML coordinates using EXACT SAME math as the Canvas!
+      const proj = project(point3D, cx, cy);
+
+      // Update HTML link position & size
+      item.el.style.transform = `translate3d(${proj.x}px, ${proj.y}px, 0) translate(-50%, -50%) scale(${proj.scale})`;
+
+      // 3D Depth: Fade out when it goes behind the globe, make bright when in front
+      const opacity = Math.max(0.1, (1.8 - proj.z) / 2);
+      item.el.style.opacity = opacity;
+
+      // Z-Index: Put links behind the globe when they orbit to the back
+      item.el.style.zIndex = Math.floor((2 - proj.z) * 100);
+    });
+    /* -------------------------------------------------------- */
+
     requestAnimationFrame(draw);
   }
 

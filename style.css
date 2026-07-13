@@ -232,17 +232,36 @@ body {
   animation: pulse 2s infinite;
 }
 
-.status-nav {
-  display: flex;
-  gap: 15px;
+/* -------------------- ORBITING 3D NAV (SATURN RING) -------------------- */
+.orbit-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
 }
 
-.status-nav a {
-  color: var(--ink-dim);
-}
-
-.status-nav a:hover {
+.orbit-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: auto; /* Clickable */
   color: var(--cyan);
+  text-decoration: none;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  font-weight: bold;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+  transition: color 0.2s, text-shadow 0.2s;
+  white-space: nowrap;
+}
+
+.orbit-link:hover {
+  color: var(--green);
+  text-shadow: 0 0 15px var(--green-glow);
+  cursor: none;
 }
 
 .status-clock {
@@ -266,23 +285,24 @@ section {
 /* -------------------- HERO SECTION -------------------- */
 .hero {
   position: relative;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   border-bottom: none;
-  padding: 0;
+  padding: 60px 0;
+  gap: 40px;
 }
 
 #core-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
+  position: relative;
+  width: 440px;
+  height: 440px;
+  max-width: 100%;
+  z-index: 1;
+  flex-shrink: 0;
+  cursor: grab;
 }
 
 #matrix-canvas {
@@ -935,8 +955,31 @@ body:has(a:hover, button:hover, input:focus, input:hover, textarea:focus, textar
   border-color: var(--magenta);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px 0;
+    gap: 30px;
+    min-height: auto;
+  }
+
+  .hero-inner {
+    max-width: 100%;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  #core-canvas {
+    width: 320px;
+    height: 320px;
+    margin: 0 auto;
+  }
+
   .hero-name {
     font-size: 2rem;
   }
@@ -944,10 +987,6 @@ body:has(a:hover, button:hover, input:focus, input:hover, textarea:focus, textar
   .statusbar-inner {
     flex-direction: column;
     gap: 10px;
-  }
-
-  .status-nav {
-    display: none;
   }
 
   /* Hide nav on mobile to save space */
