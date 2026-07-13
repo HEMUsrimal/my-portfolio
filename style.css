@@ -274,7 +274,6 @@ section {
   padding: 0;
 }
 
-#matrix-canvas,
 #core-canvas {
   position: absolute;
   top: 0;
@@ -284,6 +283,17 @@ section {
   width: 100%;
   height: 100%;
   z-index: -1;
+}
+
+#matrix-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0.15; /* Extremely subtle 15% opacity to sit elegantly in the background */
+  z-index: -2;   /* Placed behind all content containers */
+  pointer-events: none; /* Let clicks pass through it */
 }
 
 .hero-inner {
