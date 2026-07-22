@@ -79,7 +79,8 @@ if (container) {
   const fScene = new THREE.Scene();
   const fCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
   const fRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  fRenderer.setSize(280, 280);
+  const pSize = Math.min(window.innerWidth, window.innerHeight) * 0.5;
+  fRenderer.setSize(pSize, pSize);
   fRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   faceContainer.appendChild(fRenderer.domElement);
 
@@ -180,14 +181,8 @@ if (container) {
         origPositions.push(px, py, pz);
 
         const color = new THREE.Color();
-        // Theme Colors: Head (Cyan), Torso (Emerald), Hips (Magenta)
-        if (ny < 0.32) {
-          color.setRGB(0.0, 0.85, 1.0); // Neon Cyan
-        } else if (ny < 0.68) {
-          color.setRGB(0.1, 0.95, 0.4); // Neon Emerald Green
-        } else {
-          color.setRGB(1.0, 0.0, 0.5); // Neon Violet/Magenta
-        }
+        // Theme Colors: All dots same green color as requested
+        color.setRGB(0.1, 0.95, 0.4); // Neon Emerald Green
 
         // Apply shade factoring using luminance
         color.multiplyScalar(0.45 + l * 0.55);
@@ -243,8 +238,9 @@ if (container) {
 
       if (particleSystem) {
         if (!isExploding) {
-          // 1. Slow idle rotation
-          particleSystem.rotation.y += 0.005;
+          // 1. Variable idle rotation: fast at 90/270, slow at 0/180
+          const speed = 0.002 + 0.03 * Math.abs(Math.sin(particleSystem.rotation.y));
+          particleSystem.rotation.y += speed;
 
           // 2. Slow breathing wiggle and sweep scanline highlighting
           const posAttr = geometry.attributes.position;
